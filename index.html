@@ -130,6 +130,8 @@ table{border-collapse:collapse;width:100%;font-size:14px}th,td{text-align:left;p
 th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
 footer{border-top:1px solid var(--line);color:var(--muted);font-size:13px;padding-block:16px;text-align:center}
 @media (prefers-reduced-motion:no-preference){.msg{animation:in .18s ease-out}@keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}}
+/* hidden bars */
+.chat .status,.chat .assist,.chat .composer{display:none!important}
 </style>
 </head>
 <body>
@@ -459,7 +461,6 @@ $("serviceGrid").innerHTML = SUBJECTS.map((s) => `<button class="tile" data-ask=
 const DEPTS = [...new Map(DATA.map((r) => [r.dc, r.d])).entries()];
 $("deptGrid").innerHTML = DEPTS.map(([c, n]) => `<button class="tile" data-dept="${esc(c)}"><b>${esc(n)}</b><span>${DATA.filter((r) => r.dc === c).length} records</span></button>`).join("");
 msgs.innerHTML = "";
-add("bot", `<p class="lead">Hello. I help residents and council staff find information about Lusaka City Council services and the records behind them.</p><p>I only use the approved sample records, and I show where each record is held: digital, physical or both. I can't see personal accounts or take payments. Try one of the suggestions above, or type your own question.</p>`);
 
 document.addEventListener("click", (e) => {
   const t = e.target.closest("button, a"); if (!t) return;
@@ -495,7 +496,7 @@ renderQueue();
 </script>
 <script>
 /* Voiceflow AI agent: paste your Project ID between the quotes. Leave empty to run without it. */
-const VOICEFLOW_PROJECT_ID = "6ad90235ccac1895c9b41557";
+const VOICEFLOW_PROJECT_ID = "";
 (function () {
   const btn = document.getElementById("vfOpen");
   if (!VOICEFLOW_PROJECT_ID) return;
