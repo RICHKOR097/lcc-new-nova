@@ -130,6 +130,35 @@ table{border-collapse:collapse;width:100%;font-size:14px}th,td{text-align:left;p
 th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
 footer{border-top:1px solid var(--line);color:var(--muted);font-size:13px;padding-block:16px;text-align:center}
 @media (prefers-reduced-motion:no-preference){.msg{animation:in .18s ease-out}@keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}}
+
+/* site info: footer, about, faq, terms */
+.sitefoot{background:#1d1f21;color:#e6e6e6;border-top:3px solid var(--orange);margin-top:8px}
+.sitefoot .cols{max-width:1040px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:26px;padding-block:28px 12px}
+.sitefoot h3{margin:0 0 8px;font-size:17px;font-weight:600;color:#fff;padding-bottom:8px;border-bottom:1px solid #3a3d40}
+.sitefoot ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.sitefoot a{color:#ff9a2e;text-decoration:none;display:inline-flex;align-items:center;gap:10px;padding:7px 0;min-height:36px}
+.sitefoot a:hover{text-decoration:underline}
+.sitefoot svg{width:20px;height:20px;flex:none;fill:#fff}
+.sitefoot .sup b{display:block;color:#fff;margin-top:10px;font-weight:600}
+.sitefoot .sup span{color:#a9adb1;font-size:14px}
+.sitefoot{text-align:left}.sitefoot .sup .row{padding:3px 0;line-height:1.5}.sitefoot .sup .row a{display:inline;padding:0;min-height:0}
+.sitefoot .small{max-width:1040px;margin:0 auto;padding-block:12px 22px;color:#a9adb1;font-size:13px;border-top:1px solid #34373a;text-align:center}
+.infoCard{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.infoCard h2{margin:0;font-size:20px}
+.infoCard p{margin:0;color:#cfe0d6}
+.infoCard a{color:var(--orange)}
+details.acc{border:1px solid var(--line);border-radius:14px;background:var(--panel-2);overflow:hidden}
+details.acc+details.acc{margin-top:8px}
+details.acc summary{cursor:pointer;list-style:none;padding:14px 16px;font-weight:700;display:flex;justify-content:space-between;gap:12px;align-items:center}
+details.acc summary::-webkit-details-marker{display:none}
+details.acc summary::after{content:"+";color:var(--orange);font-size:22px;line-height:1}
+details.acc[open] summary::after{content:"\2212"}
+details.acc .body{padding:0 16px 14px;color:#cfe0d6;display:flex;flex-direction:column;gap:8px}
+details.acc .body p{margin:0}
+.grpTitle{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:18px 0 8px}
+.contactGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.contactGrid .card a{color:var(--orange);overflow-wrap:anywhere}
+.draftnote{border-left:4px solid var(--orange);background:rgba(242,140,27,.08);padding:10px 12px;border-radius:8px;font-size:14px;color:#e9d9bf}
 /* hidden bars */
 .chat .status,.chat .assist,.chat .composer{display:none!important}
 </style>
@@ -161,6 +190,9 @@ footer{border-top:1px solid var(--line);color:var(--muted);font-size:13px;paddin
     <a href="#" data-go="services">Services</a>
     <a href="#" data-go="departments">Departments</a>
     <a href="#" data-go="help">Help and support</a>
+    <a href="#" data-go="about">About</a>
+    <a href="#" data-go="faq">FAQs</a>
+    <a href="#" data-go="terms">Terms and conditions</a>
   </nav>
   <p class="sub">LCC NOVA AI answers from approved council records only.</p>
 </aside>
@@ -230,10 +262,31 @@ footer{border-top:1px solid var(--line);color:var(--muted);font-size:13px;paddin
       <b>What it cannot do</b>
       <p class="note" style="margin:0">See personal accounts or balances, take payments, give legal advice, or waive fees. It will offer to pass your question to a council officer.</p>
       <b>Need a person?</b>
-      <p class="note" style="margin:0">Use "Pass to a council officer" in the chat. For e-Services portal support: +260 211 428 600 (short code 2008) or info@eservices.gov.zm. Council contact details: To be confirmed with LCC.</p>
+      <p class="note" style="margin:0">Use "Pass to a council officer" in the chat, or contact the council directly (details below). </p>
+      <div class="contactGrid" id="helpContacts"></div>
       <b>Your privacy</b>
       <p class="note" style="margin:0">You do not need to give a name or phone number to ask a question. Contact details are collected only if you choose to leave them for a reply.</p>
     </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="view" id="v-about">
+    <h1 class="page">About</h1>
+    <div id="aboutBody"></div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="view" id="v-faq">
+    <h1 class="page">Frequently asked questions</h1>
+    <p class="lede">Quick answers about LCC NOVA AI and about using Lusaka City Council e-services.</p>
+    <div id="faqBody"></div>
+  </section>
+
+  <!-- TERMS -->
+  <section class="view" id="v-terms">
+    <h1 class="page">Terms and conditions</h1>
+    <p class="draftnote">Draft terms for the LCC NOVA AI prototype, written by Team Apex. They are not legal advice and must be reviewed and approved by Lusaka City Council before public use. The e-Council portal has its own terms.</p>
+    <div id="termsBody" style="margin-top:14px"></div>
   </section>
 
   <!-- STAFF QUEUE (demo) -->
@@ -250,7 +303,14 @@ footer{border-top:1px solid var(--line);color:var(--muted);font-size:13px;paddin
   </section>
 </main>
 
-<footer class="pad">LCC NOVA AI &middot; Prototype by Team Apex, University of Zambia &middot; Sample data only</footer>
+<footer class="sitefoot">
+  <div class="cols pad">
+    <div><h3>Useful Links</h3><ul id="fLinks"></ul></div>
+    <div><h3>Social Networks</h3><ul id="fSocial"></ul></div>
+    <div class="sup"><h3>Support</h3><div id="fSupport"></div></div>
+  </div>
+  <p class="small pad">LCC NOVA AI &middot; Prototype by Team Apex, University of Zambia &middot; Sample data only, not an official council service.</p>
+</footer>
 
 <div class="modal" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="lt">
   <div class="dlg">
@@ -267,6 +327,76 @@ footer{border-top:1px solid var(--line);color:var(--muted);font-size:13px;paddin
 
 <script src="data/records.js"></script>
 <script>
+/* ============ SITE_INFO: edit contact details, links, FAQs and terms here ============ */
+const SITE_INFO = {
+  council: "Lusaka City Council",
+  website: { label: "lcc.org.zm", url: "https://lcc.org.zm" },
+  portal: { label: "e-Council services portal", url: "https://ecouncils.gsb.gov.zm" },
+  // Lusaka City Council contact details (as shown on the council's Facebook page)
+  lcc: { phone: "0211 252 048", email: "social@lcc.gov.zm", handle: "citycouncillusaka" },
+  // e-Services portal support call centre (as shown in the e-Council portal footer)
+  portalSupport: { phone: "+260 211 428 600", shortCode: "2008", email: "info@eservices.gov.zm" },
+  // Paste the official page links here. If left empty, the link opens a search for "Lusaka City Council".
+  social: { facebook: "", youtube: "", twitter: "", instagram: "" }
+};
+const FAQ_GROUPS = [
+  { title: "About LCC NOVA AI", items: [
+    ["What is LCC NOVA AI?", ["An assistant that helps you find information about Lusaka City Council services and the records behind them, and shows whether each record is digital, physical or both."]],
+    ["Is this an official council service?", ["No. It is a prototype by Team Apex, University of Zambia, for the AI for Public Good Challenge. It uses sample data and is not official council advice."]],
+    ["Can it show my account, balance or case?", ["No. It cannot see personal accounts, balances or cases, and it cannot take payments. It can pass your question to a council officer."]],
+    ["What do Digital, Physical and Both mean?", ["Digital: a digital copy exists. Physical: only a paper copy exists, kept at the location shown. Both: a digital copy and a paper copy exist."]],
+    ["How do I search?", ["Type a keyword, a subject such as Property rates, an Act reference, or a full question. The Search page also lets you pick the mode."]]
+  ]},
+  { title: "Getting started with online services", items: [
+    ["How do I start using council e-services?", ["Register a free ZamPass account on the ZamPass portal and verify it with your national ID. This is required to log in and apply for any electronic service.", "Sign in to the e-Council portal with your ZamPass details using the My Profile, ZamPass Login option. Browse services from the home page or from My Workplace, Available Services. Open a service passport, review the requirements and fees, then choose Apply for service."]],
+    ["I registered but missed the verification step.", ["You can verify later on the ZamPass portal by choosing Verify account and entering your national ID."]],
+    ["I forgot my password or PIN.", ["Recover it on the ZamPass portal. The e-Council portal cannot reset ZamPass details."]],
+    ["Should I sign out?", ["Yes, always sign out at the end of your session, especially on a shared computer."]]
+  ]},
+  { title: "Applying for a service", items: [
+    ["What should I check before I apply?", ["Open the service passport. It shows who can apply, eligibility requirements, fees, processing time and validity."]],
+    ["Is my application saved if my browser closes?", ["Each step is saved automatically when you click Next. Go to My Workplace, Drafts to continue where you stopped."]],
+    ["Which files can I upload?", ["Supporting documents in PDF, JPG, PNG or HEIC format. Keep each file under the size shown next to the upload field."]]
+  ]},
+  { title: "Paying fees", items: [
+    ["How are service fees paid?", ["Through ZamPay, the government payment service. It supports bank cards, mobile money and over-the-counter cash payments through approved providers.", "After you submit, you are sent to ZamPay to choose a payment method, then returned to the portal once the payment is confirmed."]],
+    ["My payment failed or I was not sent back to the portal.", ["Do not pay again. Check your applications in My Workplace and contact support if it is not sorted out."]]
+  ]},
+  { title: "Tracking your application", items: [
+    ["Where can I see my application status?", ["My Workplace, In-Progress shows applications awaiting review or a decision. My Workplace, Reverted lists applications returned for correction. Open the case to read the reviewer's comments and submit again."]],
+    ["What happens when it is approved?", ["You receive an automated email. The issued certificate or licence is available from the case page under My Workplace, Completed."]]
+  ]},
+  { title: "Still need help?", items: [
+    ["Who do I contact?", ["For service questions, contact the council that provides the service. Contact details are on every service passport page. For portal problems use the support call centre listed in the footer, or contact Lusaka City Council directly."]]
+  ]}
+];
+const FAQ_SOURCE = "Answers about e-services come from the e-Council portal Help Center and may change. Check the portal for the latest. Fees, times and requirements for specific services: To be confirmed with LCC.";
+const TERMS = [
+  ["1. Interpretation", "Words with a capital first letter have the meanings given in these terms. The same meaning applies whether the word is singular or plural."],
+  ["2. Definitions", "\u201CService\u201D means the LCC NOVA AI web chat and search pages. \u201CWe\u201D means Team Apex, University of Zambia, who built this prototype. \u201CCouncil\u201D means Lusaka City Council. \u201CRecords\u201D means the approved sample metadata and documents the Service searches. \u201CYou\u201D means the person using the Service."],
+  ["3. Acknowledgement", "The Service is a prototype for the AI for Public Good Challenge. It uses sample or approved demonstration data. It is not an official council service and its answers are not official council advice. By using it you agree to these terms."],
+  ["4. Links to other websites", "The Service may link to other websites, such as the Council website or the e-Council portal. We do not control those sites and are not responsible for their content or terms."],
+  ["5. Termination", "We may stop or change the Service at any time without notice, for example when the challenge ends or the Council asks us to."],
+  ["6. Limitation of liability", "The Service helps you find information. We do not guarantee that it is complete, current or error free. Check important details with the Council before you act. To the extent the law allows, we are not liable for loss from using the Service."],
+  ["7. Governing law", "To be confirmed with LCC."],
+  ["8. Severability and waiver", "If part of these terms cannot be enforced, the rest still applies. Not enforcing a term does not mean we give it up."],
+  ["9. Translation interpretation", "If these terms are translated, the English version applies if there is a difference."],
+  ["10. Changes to these terms", "We may update these terms. The date and version will be shown here. Continued use means you accept the changes."],
+  ["11. Contact us", "Use the contact details in the footer, or ask a council officer through the chat. Council contact details: see the Support section."]
+];
+const telHref = (n) => "tel:" + String(n).replace(/[^+\d]/g, "");
+const SOC_SEARCH = {
+  facebook: "https://www.facebook.com/search/top?q=Lusaka%20City%20Council",
+  youtube: "https://www.youtube.com/results?search_query=Lusaka+City+Council",
+  twitter: "https://x.com/search?q=Lusaka%20City%20Council",
+  instagram: "https://www.instagram.com/explore/search/keyword/?q=Lusaka%20City%20Council"
+};
+const SOC_ICON = {
+  facebook: '<svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-1.6 19.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.3v7A10 10 0 0 0 12 2z"/></svg>',
+  youtube: '<svg viewBox="0 0 24 24"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4A2.5 2.5 0 0 0 2.4 7.2C2 8.8 2 12 2 12s0 3.2.4 4.8a2.5 2.5 0 0 0 1.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8c.4-1.6.4-4.8.4-4.8s0-3.2-.4-4.8zM10 15V9l5.2 3L10 15z"/></svg>',
+  twitter: '<svg viewBox="0 0 24 24"><path d="M18.9 2H22l-7.2 8.2L23 22h-6.6l-5.2-6.8L5.2 22H2l7.7-8.8L1.5 2h6.7l4.7 6.2L18.9 2zm-1.2 18h1.8L7.3 3.9H5.4L17.7 20z"/></svg>',
+  instagram: '<svg viewBox="0 0 24 24"><path d="M7.800 2h8.400A5.800 5.800 0 0 1 22 7.800v8.400a5.800 5.800 0 0 1-5.800 5.800H7.800A5.800 5.800 0 0 1 2 16.200V7.800A5.800 5.800 0 0 1 7.800 2zm-.2 2A3.600 3.600 0 0 0 4 7.600v8.800A3.600 3.600 0 0 0 7.600 20h8.800a3.600 3.600 0 0 0 3.600-3.600V7.600A3.600 3.600 0 0 0 16.400 4H7.600zm9.700 1.500a1.200 1.200 0 1 1 0 2.400 1.200 1.200 0 0 1 0-2.400zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg>'
+};
 const DATA = window.LCC_DATA || [];
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -492,6 +622,49 @@ $("btnLogin").addEventListener("click", () => $("loginModal").classList.add("on"
 $("closeLogin").addEventListener("click", () => $("loginModal").classList.remove("on"));
 $("openStaff").addEventListener("click", () => { $("loginModal").classList.remove("on"); show("staff"); });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") { closeDrawer(); $("loginModal").classList.remove("on"); } });
+/* ---- site info pages and footer ---- */
+(function renderSiteInfo() {
+  const S = SITE_INFO;
+  const supportCards = `<div class="card"><div class="t">Lusaka City Council</div>
+      <div class="meta"><span>Phone: <a href="${telHref(S.lcc.phone)}">${esc(S.lcc.phone)}</a></span></div>
+      <div class="meta"><span>Email: <a href="mailto:${esc(S.lcc.email)}">${esc(S.lcc.email)}</a></span></div>
+      <div class="meta"><span>Website: <a href="${esc(S.website.url)}" target="_blank" rel="noopener">${esc(S.website.label)}</a></span></div></div>
+    <div class="card"><div class="t">e-Services portal support call centre</div>
+      <div class="meta"><span>Phone: <a href="${telHref(S.portalSupport.phone)}">${esc(S.portalSupport.phone)}</a> (short code ${esc(S.portalSupport.shortCode)})</span></div>
+      <div class="meta"><span>Email: <a href="mailto:${esc(S.portalSupport.email)}">${esc(S.portalSupport.email)}</a> (short code ${esc(S.portalSupport.shortCode)})</span></div></div>`;
+  $("helpContacts").innerHTML = supportCards;
+
+  $("aboutBody").innerHTML = `
+    <div class="infoCard"><h2>About LCC NOVA AI</h2>
+      <p>LCC NOVA AI is a web chat that helps residents and council staff find information about Lusaka City Council services and the records behind them. It shows whether each record is digital, physical or both, and where the paper copy is kept.</p>
+      <p>It was built by Team Apex, University of Zambia, for the AI for Public Good Challenge. It uses sample data and is not an official council service.</p></div>
+    <div class="infoCard"><h2>About the e-Council services portal</h2>
+      <p>The e-Council portal is an online catalogue of public services. Residents, businesses and visitors can browse services, find what they need and apply online instead of going to an office. It works on phones and computers and includes online payment for services requested through it.</p>
+      <p>Each service has a service passport that shows who can apply, requirements, fees, processing time and validity. Signing in uses a ZamPass account.</p>
+      <p><a href="${esc(S.portal.url)}" target="_blank" rel="noopener">Open the ${esc(S.portal.label)}</a></p></div>
+    <div class="infoCard"><h2>Lusaka City Council</h2>
+      <p>For official council information visit <a href="${esc(S.website.url)}" target="_blank" rel="noopener">${esc(S.website.label)}</a> or contact the council directly.</p>
+      <div class="contactGrid">${supportCards}</div></div>`;
+
+  $("faqBody").innerHTML = FAQ_GROUPS.map((g) => `<div class="grpTitle">${esc(g.title)}</div>` +
+    g.items.map(([q, a]) => `<details class="acc"><summary>${esc(q)}</summary><div class="body">${a.map((p) => `<p>${esc(p)}</p>`).join("")}</div></details>`).join("")).join("") +
+    `<p class="note" style="margin-top:14px">${esc(FAQ_SOURCE)}</p>`;
+
+  $("termsBody").innerHTML = TERMS.map(([t, b], i) => `<details class="acc"${i === 0 ? " open" : ""}><summary>${esc(t)}</summary><div class="body"><p>${esc(b)}</p></div></details>`).join("");
+
+  $("fLinks").innerHTML = [["about", "About portal"], ["help", "Help"], ["terms", "Terms and Conditions"], ["faq", "FAQ"]].map(([v, l]) => `<li><a href="#" data-go="${v}">${l}</a></li>`).join("") +
+    `<li><a href="${esc(S.website.url)}" target="_blank" rel="noopener">Council website (${esc(S.website.label)})</a></li><li><a href="${esc(S.portal.url)}" target="_blank" rel="noopener">${esc(S.portal.label)}</a></li>`;
+
+  $("fSocial").innerHTML = [["facebook", "Facebook"], ["youtube", "Youtube"], ["twitter", "Twitter"], ["instagram", "Instagram"]].map(([k, l]) =>
+    `<li><a href="${esc(S.social[k] || SOC_SEARCH[k])}" target="_blank" rel="noopener" aria-label="${l}">${SOC_ICON[k]}${l}</a></li>`).join("");
+
+  $("fSupport").innerHTML = `<b>Lusaka City Council</b>
+    <div class="row">Phone: <a href="${telHref(S.lcc.phone)}">${esc(S.lcc.phone)}</a></div>
+    <div class="row">Email: <a href="mailto:${esc(S.lcc.email)}">${esc(S.lcc.email)}</a></div>
+    <b>e-Services support call centre</b>
+    <div class="row">Phone: <a href="${telHref(S.portalSupport.phone)}">${esc(S.portalSupport.phone)}</a> <span>(short code: ${esc(S.portalSupport.shortCode)})</span></div>
+    <div class="row">Email: <a href="mailto:${esc(S.portalSupport.email)}">${esc(S.portalSupport.email)}</a> <span>(short code: ${esc(S.portalSupport.shortCode)})</span></div>`;
+})();
 renderQueue();
 </script>
 <script>
@@ -503,7 +676,8 @@ const VOICEFLOW_PROJECT_ID = "6ad90235ccac1895c9b41557";
   btn.hidden = false;
   const s = document.createElement("script");
   s.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs"; s.type = "text/javascript";
-  s.onload = () => window.voiceflow.chat.load({ verify: { projectID: VOICEFLOW_PROJECT_ID }, url: "https://general-runtime.voiceflow.com", voice: { url: "https://runtime-api.voiceflow.com" } });
+  s.onerror = () => { btn.textContent = "AI agent could not load (blocked or offline)"; console.error("[vf-debug] Voiceflow script failed to load"); };
+  s.onload = () => { console.log("[vf-debug] script loaded, starting widget with project", VOICEFLOW_PROJECT_ID); window.voiceflow.chat.load({ verify: { projectID: VOICEFLOW_PROJECT_ID }, url: "https://general-runtime.voiceflow.com", voice: { url: "https://runtime-api.voiceflow.com" } }).then?.(() => console.log("[vf-debug] widget ready")).catch?.((e) => { console.error("[vf-debug] load failed", e); btn.textContent = "AI agent failed to start: check Project ID and publish"; }); };
   document.head.appendChild(s);
   btn.addEventListener("click", () => window.voiceflow && window.voiceflow.chat.open());
 })();
