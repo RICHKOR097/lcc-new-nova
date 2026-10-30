@@ -176,6 +176,38 @@ details.acc .body p{margin:0}
 .dlg .row2{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:4px}
 .dlg .linkbtn{border:0;background:none;color:#0f5a2a;text-decoration:underline;padding:0;font-size:14px}
 .dlg{max-height:92vh;overflow-y:auto}
+
+/* rich search results */
+.stats{display:flex;gap:8px;flex-wrap:wrap}
+.stat{border:1px solid var(--line);background:var(--panel-2);border-radius:12px;padding:8px 12px;font-size:14px}
+.stat b{font-size:18px;display:block}
+.fchips{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.fchip{border:1px solid var(--line);background:transparent;border-radius:999px;padding:7px 14px;font-size:14px;color:var(--muted)}
+.fchip[aria-pressed=true]{background:var(--orange);color:var(--orange-ink);border-color:var(--orange);font-weight:700}
+.rcard{border:1px solid var(--line);border-radius:16px;background:var(--panel-2);padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.rcard.best{border-color:var(--orange);box-shadow:0 0 0 1px rgba(242,140,27,.35)}
+.rtitle{font-size:18px;font-weight:700;line-height:1.25}
+.tagrow{display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-size:12.5px;border:1px solid var(--line);border-radius:999px;padding:2px 10px;color:var(--muted)}
+.tag.best{border-color:var(--orange);color:var(--orange);font-weight:700}
+.avail{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (max-width:520px){.avail{grid-template-columns:1fr}}
+.avail .head{grid-column:1/-1;font-weight:800;letter-spacing:.04em;font-size:14px;padding:6px 10px;border-radius:10px}
+.avail.a-Digital .head{background:var(--digital-bg);color:var(--digital)}
+.avail.a-Physical .head{background:var(--physical-bg);color:var(--physical)}
+.avail.a-Both .head{background:var(--both-bg);color:var(--both)}
+.avail .cell{border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:14px;background:rgba(0,0,0,.18)}
+.avail .cell b{display:block;font-size:13px;margin-bottom:2px}
+.avail .cell.yes{border-color:#2f7a52}.avail .cell.no{opacity:.7}
+.avail .cell .loc{font-weight:700;color:var(--ink);overflow-wrap:anywhere}
+.snip{margin:0;color:#cfe0d6}
+details.rec{border-top:1px solid var(--line);padding-top:8px}
+details.rec summary{cursor:pointer;font-weight:700;color:var(--orange);padding:4px 0}
+details.rec .sec{margin-top:10px}
+details.rec .sec h4{margin:0 0 3px;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+details.rec .sec div{white-space:pre-line;overflow-wrap:anywhere;font-size:15px}
+.related{display:flex;gap:8px;flex-wrap:wrap}
+dl.facts dd{white-space:pre-line}
 /* hidden bars */
 .chat .status,.chat .assist,.chat .composer{display:none!important}
 </style>
@@ -245,16 +277,18 @@ details.acc .body p{margin:0}
   <!-- SEARCH -->
   <section class="view" id="v-search">
     <h1 class="page">Search records</h1>
-    <p class="lede">Four query modes: keyword, subject or topic, citation, and natural language.</p>
+    <p class="lede">Type to search all council services. Results update as you type and show whether each record is digital, physical or both, and where the paper copy is kept.</p>
     <div class="panel">
       <form class="searchrow" id="sform">
         <label for="sq" class="label" style="position:absolute;left:-9999px">Search</label>
-        <input class="f" id="sq" type="text" placeholder="Search a keyword, subject, citation or question" autocomplete="off">
+        <input class="f" id="sq" type="search" placeholder="Try: garbage collection, building permit, Rating Act, where is the stall register" autocomplete="off">
         <select class="f" id="smode" aria-label="Search mode" style="width:auto"><option value="auto">Auto-detect</option><option value="keyword">Keyword</option><option value="subject">Subject or topic</option><option value="citation">Citation</option><option value="natural">Natural language</option></select>
         <button class="btn" type="submit">Search</button>
       </form>
-      <div class="chips" id="schips"></div>
-      <div id="sresults" style="display:flex;flex-direction:column;gap:10px"></div>
+      <div class="fchips" id="afilters" role="group" aria-label="Filter by availability"></div>
+      <div class="fchips"><label class="note" for="sdept">Department</label><select class="f" id="sdept" style="width:auto;max-width:100%"></select></div>
+      <div id="sbrowse"></div>
+      <div id="sresults" style="display:flex;flex-direction:column;gap:12px" aria-live="polite"></div>
     </div>
   </section>
 
@@ -477,9 +511,9 @@ function tokens(s) {
 }
 const norm = (s) => String(s || "").toLowerCase().replace(/\(.*?\)/g, "").replace(/[^a-z0-9]+/g, " ").trim();
 const recText = (r) => r.p.map((x) => x.h + " " + x.t).join(" ");
-const IDX = DATA.map((r) => ({ r, title: new Set(tokens(r.t)), subj: new Set(tokens(r.s)), cit: new Set(tokens(r.ci)), dept: new Set(tokens(r.d + " " + r.ty)), body: new Set(tokens(recText(r))) }));
+const IDX = DATA.map((r) => ({ r, title: new Set(tokens(r.t)), subj: new Set(tokens(r.s)), cit: new Set(tokens(r.ci)), dept: new Set(tokens(r.d + " " + r.ty)), al: new Set(tokens(r.al || "")), body: new Set(tokens(recText(r))) }));
 const DF = {};
-IDX.forEach((x) => new Set([...x.title, ...x.subj, ...x.cit, ...x.dept, ...x.body]).forEach((t) => (DF[t] = (DF[t] || 0) + 1)));
+IDX.forEach((x) => new Set([...x.title, ...x.subj, ...x.cit, ...x.dept, ...x.al, ...x.body]).forEach((t) => (DF[t] = (DF[t] || 0) + 1)));
 const idf = (t) => (DF[t] ? Math.max(0, Math.log(DATA.length / DF[t])) : 0.5);
 
 function byNatural(q) {
@@ -487,11 +521,18 @@ function byNatural(q) {
   if (!qt.length || max === 0) return [];
   return IDX.map((x) => {
     let s = 0;
-    for (const t of qt) s += idf(t) * Math.max(x.title.has(t) ? 3 : 0, x.subj.has(t) ? 3 : 0, x.cit.has(t) ? 2 : 0, x.dept.has(t) ? 1 : 0, x.body.has(t) ? 1 : 0);
+    for (const t of qt) s += idf(t) * Math.max(x.title.has(t) ? 3 : 0, x.subj.has(t) ? 3 : 0, x.al.has(t) ? 3 : 0, x.cit.has(t) ? 2 : 0, x.dept.has(t) ? 1 : 0, x.body.has(t) ? 1 : 0);
     return { r: x.r, score: s / max };
   }).filter((x) => x.score > 0).sort((a, b) => b.score - a.score);
 }
-const byKeyword = (q) => { const k = norm(q); return k ? DATA.filter((r) => norm(r.t + " " + r.s + " " + r.ci + " " + recText(r)).includes(k)).map((r) => ({ r, score: 1 })) : []; };
+const byKeyword = (q) => {
+  const k = norm(q); if (!k) return [];
+  return DATA.map((r) => {
+    let s = 0;
+    if (norm(r.t).includes(k)) s = 3; else if (norm(r.s).includes(k) || norm(r.al).includes(k)) s = 2; else if (norm(r.t + " " + r.s + " " + r.ci + " " + r.c + " " + r.al + " " + recText(r)).includes(k)) s = 1;
+    return { r, score: s };
+  }).filter((x) => x.score > 0).sort((a, b) => b.score - a.score);
+};
 function bySubject(q) {
   const k = norm(q), subs = [...new Set(DATA.map((r) => r.s))];
   const hit = subs.filter((s) => norm(s) === k || (k && (norm(s).includes(k) || k.includes(norm(s)))));
@@ -510,8 +551,9 @@ function detectMode(q) {
   return k.split(" ").length <= 2 ? "keyword" : "natural";
 }
 function runSearch(q, mode) {
-  const m = !mode || mode === "auto" ? detectMode(q) : mode;
-  return { mode: m, results: { keyword: byKeyword, subject: bySubject, citation: byCitation, natural: byNatural }[m](q) };
+  let m = !mode || mode === "auto" ? detectMode(q) : mode, results = { keyword: byKeyword, subject: bySubject, citation: byCitation, natural: byNatural }[m](q), fallback = false;
+  if (!results.length && m !== "natural" && m !== "citation") { results = byNatural(q).filter((x) => x.score >= 0.25); if (results.length) { m = "natural"; fallback = true; } }
+  return { mode: m, results, fallback };
 }
 const MODE_NAMES = { auto: "Auto", keyword: "Keyword", subject: "Subject or topic", citation: "Citation", natural: "Natural language" };
 
@@ -550,7 +592,7 @@ function answerFor(q, mode) {
   else if (where) head = `“${lead.t}” has no paper copy in the approved dataset. It is ${a.status.toLowerCase()} only.`;
   return {
     kind: "answer", mode: m, text: head, ho: null,
-    facts: [["Who it is for", sec(lead, "Who this applies to")], ["Fee", lead.dg ? f.fee : null], ["Processing time", lead.dg ? f.time : null], ["Validity", lead.dg ? f.validity : null], ["Legal basis", lead.ci || "None listed in the approved record"], ["Record owner", lead.o]].filter(([, v]) => v),
+    facts: [["Who it is for", sec(lead, "Who this applies to")], ["Steps", sec(lead, "Steps")], ["What to bring", sec(lead, "What to bring")], ["Fee", lead.dg ? f.fee : null], ["Processing time", lead.dg ? f.time : null], ["Validity", lead.dg ? f.validity : null], ["Legal basis", lead.ci || "None listed in the approved record"], ["Record owner", lead.o]].filter(([, v]) => v),
     next: lead.dg ? `Read the digital record (${lead.f}) or start on the official portal.` : `Ask at ${a.location || "the owning department"}.`,
     sources: srcOf(picked),
   };
@@ -604,26 +646,66 @@ function renderQueue() {
     ${h.contact_detail ? `<div class="meta"><span>Contact: ${esc(h.contact_detail)}</span></div>` : ""}
     <label class="note">Status <select class="f" data-q="${i}" style="width:auto"><option ${h.status === "new" ? "selected" : ""}>new</option><option ${h.status === "in progress" ? "selected" : ""}>in progress</option><option ${h.status === "answered" ? "selected" : ""}>answered</option></select></label></div>`).join("") : `<p class="note">No handovers yet. Ask something the assistant cannot find, then choose "Pass to a council officer".</p>`;
 }
-function resultCard(r) {
-  const a = availability(r);
-  return `<div class="card"><div class="t">${esc(r.t)}</div><div>${badge(r)}</div>
-    <div class="meta"><span>${esc(r.d)}</span><span>${esc(r.s)}</span><span>${esc(r.ty)}</span><span class="mono">${esc(r.c)}</span><span>Updated ${esc(r.u)}</span></div>
-    <div class="meta"><span>Owner: ${esc(r.o)}</span>${a.location ? `<span>Paper copy: ${esc(a.location)}</span>` : ""}${r.ci ? `<span>${esc(r.ci)}</span>` : ""}</div></div>`;
+const SEC_ORDER = ["Purpose", "Who this applies to", "Steps", "What to bring", "Fees and time", "Legal basis", "Where to apply", "Common questions", "Related records", "Record details"];
+function availBox(r) {
+  const a = availability(r), cls = a.cls === "None" ? "Physical" : a.cls;
+  const head = { Both: "BOTH: DIGITAL AND PHYSICAL", Digital: "DIGITAL ONLY", Physical: "PHYSICAL ONLY (PAPER)" }[a.status] || "NOT IN APPROVED DATASET";
+  return `<div class="avail a-${cls}"><div class="head">${head}</div>
+    <div class="cell ${r.dg ? "yes" : "no"}"><b>${r.dg ? "✓" : "✗"} Digital copy</b>${r.dg ? `Yes. Digital file: <span class="mono">${esc(r.f || r.c)}</span>` : "No digital copy recorded"}</div>
+    <div class="cell ${r.ph ? "yes" : "no"}"><b>${r.ph ? "✓" : "✗"} Paper copy</b>${r.ph ? `Yes. Kept at: <span class="loc">${esc(r.loc)}</span>` : "No paper copy recorded"}</div></div>`;
+}
+const secOf = (r, h) => (r.p.find((x) => x.h === h) || {}).t || "";
+function recordDetails(r, open) {
+  const secs = SEC_ORDER.map((h) => [h, secOf(r, h)]).filter(([, t]) => t);
+  return `<details class="rec"${open ? " open" : ""}><summary>${open ? "Full record" : "Read full record"}</summary>${secs.map(([h, t]) => `<div class="sec"><h4>${esc(h)}</h4><div>${esc(t)}</div></div>`).join("")}
+    <div class="sec"><h4>Owner and date</h4><div>${esc(r.o)}. Last updated ${esc(r.u)}.</div></div></details>`;
+}
+function resultCard(r, best) {
+  const purpose = secOf(r, "Purpose");
+  return `<article class="rcard${best ? " best" : ""}" data-code="${esc(r.c)}">
+    <div class="tagrow">${best ? '<span class="tag best">Best match</span>' : ""}<span class="tag">${esc(r.d)}</span><span class="tag">${esc(r.s)}</span><span class="tag">${esc(r.ty)}</span><span class="tag mono">${esc(r.c)}</span></div>
+    <div class="rtitle">${esc(r.t)}</div>
+    ${availBox(r)}
+    ${purpose ? `<p class="snip">${esc(purpose)}</p>` : ""}
+    ${r.ci ? `<div class="note">Legal basis: ${esc(r.ci)}</div>` : ""}
+    ${recordDetails(r, best)}</article>`;
+}
+const SS = { q: "", mode: "auto", avail: "all", dept: "all", limit: 10 };
+const COMMON = ["Property rates", "Business levy", "Trading licence", "Building permit", "Development permit", "Health permit", "Market stalls", "Garbage collection", "Liquor licence", "Burials", "Street lighting", "Road works", "Tenders", "Jobs and attachments", "Fire services", "Outdoor advertisement", "Council housing", "Community facilities", "By-laws", "Payments"];
+function countBy(list, f) { return list.filter(f).length; }
+function renderBrowse() {
+  const all = DATA, d = countBy(all, (r) => r.dg && !r.ph), p = countBy(all, (r) => r.ph && !r.dg), b = countBy(all, (r) => r.dg && r.ph);
+  $("sbrowse").innerHTML = `<div class="stats"><div class="stat"><b>${all.length}</b>records</div><div class="stat"><b>${DEPTS.length}</b>departments</div><div class="stat"><b style="color:var(--digital)">${d}</b>digital only</div><div class="stat"><b style="color:var(--physical)">${p}</b>physical only</div><div class="stat"><b style="color:var(--both)">${b}</b>both</div></div>
+    <span class="label" style="display:block;margin-top:10px">Common topics (suggested)</span><div class="chips" style="flex-wrap:wrap;overflow:visible;margin-top:6px">${COMMON.filter((s) => DATA.some((r) => r.s === s)).map((s) => `<button class="chip" data-s="${esc(s)}">${esc(s)}</button>`).join("")}</div>`;
+}
+function renderFilters(counts) {
+  $("afilters").innerHTML = [["all", "All"], ["Digital", "Digital only"], ["Physical", "Physical only"], ["Both", "Both"]].map(([k, l]) => `<button type="button" class="fchip" data-af="${k}" aria-pressed="${SS.avail === k}">${l}${counts ? " (" + counts[k] + ")" : ""}</button>`).join("");
 }
 function doSearch(q, m) {
-  q = q.trim(); const out = $("sresults"); if (!q) { out.innerHTML = ""; return; }
-  const { mode: used, results } = runSearch(q, m);
-  const shown = results.filter((x) => used !== "natural" || x.score >= 0.25).slice(0, 12);
-  let h = `<p class="note" style="margin:0">${shown.length} result${shown.length === 1 ? "" : "s"} &middot; ${MODE_NAMES[used]} mode${m === "auto" ? " (auto-detected)" : ""}</p>`;
-  if (!shown.length) h += `<div class="card"><div class="t">Not in the approved dataset</div><div class="meta"><span>Nothing matched. This does not mean the record does not exist.</span></div></div>`;
-  h += shown.map((x) => resultCard(x.r)).join("");
+  SS.q = (q ?? $("sq").value).trim(); SS.mode = m ?? $("smode").value;
+  const out = $("sresults");
+  if (!SS.q) { out.innerHTML = ""; $("sbrowse").hidden = false; renderFilters(null); return; }
+  $("sbrowse").hidden = true;
+  const { mode: used, results, fallback } = runSearch(SS.q, SS.mode);
+  let list = results.filter((x) => used !== "natural" || x.score >= 0.25);
+  const counts = { all: list.length, Digital: countBy(list, (x) => availability(x.r).status === "Digital"), Physical: countBy(list, (x) => availability(x.r).status === "Physical"), Both: countBy(list, (x) => availability(x.r).status === "Both") };
+  renderFilters(counts);
+  if (SS.avail !== "all") list = list.filter((x) => availability(x.r).status === SS.avail);
+  if (SS.dept !== "all") list = list.filter((x) => x.r.dc === SS.dept);
+  const shown = list.slice(0, SS.limit);
+  let h = `<p class="note" style="margin:0"><b>${list.length}</b> result${list.length === 1 ? "" : "s"} for “${esc(SS.q)}” &middot; ${MODE_NAMES[used]} mode${SS.mode === "auto" ? " (auto-detected)" : ""}${fallback ? " (no exact match, showing closest records)" : ""}</p>`;
+  if (!list.length) h += `<div class="rcard"><div class="rtitle">Not in the approved dataset</div><p class="snip">Nothing matched${SS.avail !== "all" || SS.dept !== "all" ? " with these filters" : ""}. This does not mean the record does not exist. Try other words, or ask a council officer.</p></div>`;
+  h += shown.map((x, i) => resultCard(x.r, i === 0 && SS.avail === "all" && SS.dept === "all")).join("");
+  if (list.length > shown.length) h += `<button class="btn alt" type="button" data-more="1">Show ${Math.min(10, list.length - shown.length)} more of ${list.length - shown.length} remaining</button>`;
   if (shown.length) {
-    const subj = shown[0].r.s, same = DATA.filter((r) => r.s === subj);
-    h += `<span class="label">Verified against: all records on “${esc(subj)}” across departments</span><div class="tablewrap"><table><thead><tr><th>Record</th><th>Department</th><th>Availability</th><th>Paper copy</th></tr></thead><tbody>${same.map((r) => `<tr><td>${esc(r.t)}</td><td>${esc(r.d)}</td><td>${badge(r)}</td><td>${esc(r.loc || "—")}</td></tr>`).join("")}</tbody></table></div>`;
+    const top = shown[0].r, rel = (secOf(top, "Related records") || "").split("; ").filter(Boolean);
+    if (rel.length) h += `<span class="label">You may also need</span><div class="related">${rel.map((t) => `<button class="chip" data-s="${esc(t.replace(/ \(DEMO-[A-Z]+-\d+\)$/, ""))}">${esc(t.replace(/ \(DEMO-[A-Z]+-\d+\)$/, ""))}</button>`).join("")}</div>`;
+    const same = DATA.filter((r) => r.s === top.s);
+    h += `<span class="label">Verified against: all records on “${esc(top.s)}” across departments</span><div class="tablewrap"><table><thead><tr><th>Record</th><th>Department</th><th>Availability</th><th>Paper copy location</th></tr></thead><tbody>${same.map((r) => `<tr><td>${esc(r.t)}</td><td>${esc(r.d)}</td><td>${badge(r)}</td><td>${esc(r.loc || "— (no paper copy)")}</td></tr>`).join("")}</tbody></table></div>`;
   }
   out.innerHTML = h;
 }
-
+let sDebounce;
 /* ---- navigation ---- */
 function show(v) {
   if (v === "staff" && session.role !== "staff") { openAuth("staff"); return; }
@@ -635,9 +717,8 @@ function openDrawer() { $("drawer").classList.add("open"); $("scrim").hidden = f
 function closeDrawer() { $("drawer").classList.remove("open"); $("scrim").hidden = true; $("burger").setAttribute("aria-expanded", "false"); $("drawer").setAttribute("aria-hidden", "true"); }
 
 /* ---- wiring ---- */
-const STARTERS = ["Property rates", "Business levy", "Development permit", "Health permit", "Where is the market stall register?", "Rating Act No. 21 of 2018"];
+const STARTERS = ["Property rates", "Business levy", "Building permit", "Garbage collection", "Market stalls", "Health permit", "Where is the market stall register?", "Rating Act No. 21 of 2018"];
 $("chips").innerHTML = STARTERS.map((s) => `<button class="chip" data-ask="${esc(s)}">${esc(s)}</button>`).join("");
-$("schips").innerHTML = ["property rates", "Rating Act No. 21 of 2018", "market", "Which records show building plans?", "fire certificate"].map((s) => `<button class="chip" data-s="${esc(s)}">${esc(s)}</button>`).join("");
 $("modes").innerHTML = Object.entries(MODE_NAMES).map(([k, v]) => `<button type="button" data-mode="${k}" aria-pressed="${k === "auto"}">${v}</button>`).join("");
 const SUBJECTS = [...new Set(DATA.map((r) => r.s))].sort();
 $("serviceGrid").innerHTML = SUBJECTS.map((s) => `<button class="tile" data-ask="${esc(s)}"><b>${esc(s)}</b><span>${DATA.filter((r) => r.s === s).length} record${DATA.filter((r) => r.s === s).length === 1 ? "" : "s"}</span></button>`).join("");
@@ -649,7 +730,9 @@ document.addEventListener("click", (e) => {
   const t = e.target.closest("button, a"); if (!t) return;
   if (t.dataset.go) { e.preventDefault(); show(t.dataset.go); }
   if (t.dataset.ask) { e.preventDefault(); ask(t.dataset.ask); }
-  if (t.dataset.s) { $("sq").value = t.dataset.s; doSearch(t.dataset.s, $("smode").value); }
+  if (t.dataset.s) { e.preventDefault(); if (!$("v-search").classList.contains("on")) show("search"); $("sq").value = t.dataset.s; SS.limit = 10; doSearch(t.dataset.s, $("smode").value); window.scrollTo({ top: 0 }); }
+  if (t.dataset.af) { SS.avail = t.dataset.af; SS.limit = 10; doSearch(); }
+  if (t.dataset.more) { SS.limit += 10; doSearch(); }
   if (t.dataset.ho) openHandover(t, t.dataset.ho);
   if (t.dataset.mode) { mode = t.dataset.mode; $("modepill").textContent = "Mode: " + MODE_NAMES[mode]; document.querySelectorAll("#modes button").forEach((b) => b.setAttribute("aria-pressed", String(b === t))); }
   if (t.dataset.dept) {
@@ -662,7 +745,12 @@ document.addEventListener("change", (e) => { const s = e.target.closest("select[
 $("form").addEventListener("submit", (e) => { e.preventDefault(); const v = $("q").value; $("q").value = ""; ask(v); });
 $("q").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("form").requestSubmit(); } });
 $("plus").addEventListener("click", () => { const on = $("modes").classList.toggle("on"); $("plus").setAttribute("aria-expanded", String(on)); });
-$("sform").addEventListener("submit", (e) => { e.preventDefault(); doSearch($("sq").value, $("smode").value); });
+$("sform").addEventListener("submit", (e) => { e.preventDefault(); SS.limit = 10; doSearch($("sq").value, $("smode").value); });
+$("sq").addEventListener("input", () => { clearTimeout(sDebounce); sDebounce = setTimeout(() => { SS.limit = 10; doSearch(); }, 120); });
+$("smode").addEventListener("change", () => { SS.limit = 10; doSearch(); });
+$("sdept").innerHTML = '<option value="all">All departments</option>' + DEPTS.map(([c, n]) => `<option value="${esc(c)}">${esc(n)}</option>`).join("");
+$("sdept").addEventListener("change", () => { SS.dept = $("sdept").value; SS.limit = 10; doSearch(); });
+renderBrowse(); renderFilters(null);
 $("staffgo").addEventListener("click", () => {
   const q = $("staffq").value.trim(); if (!q) return;
   const a = answerFor(q, "auto"), b = document.createElement("div");
