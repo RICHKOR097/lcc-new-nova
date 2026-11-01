@@ -224,6 +224,58 @@ footer{border-top:1px solid var(--line);color:var(--muted);font-size:13px;paddin
 .nbadge{display:inline-block;min-width:22px;text-align:center;background:var(--orange);color:var(--orange-ink);border-radius:999px;font-size:13px;padding:0 7px;margin-left:6px;font-weight:700}
 .drawer nav a .nbadge{background:#b84a00;color:#fff}
 
+/* motion: hero scene, reveals, micro-interactions. Only transform and opacity, so it stays smooth on phones. */
+.progress{position:fixed;left:0;top:0;height:3px;width:100%;background:var(--orange);transform:scaleX(0);transform-origin:left;z-index:70;pointer-events:none}
+.hero{border-radius:16px;overflow:hidden;height:130px;margin:4px 0 14px;border:1px solid var(--line)}
+.hero svg{width:100%;height:100%;display:block}
+.hero .sun{transform-box:fill-box;transform-origin:center;animation:pulse 4s ease-in-out infinite}
+.hero .sunglow{transform-box:fill-box;transform-origin:center;animation:pulse 4s ease-in-out infinite reverse}
+.hero .cloud{animation:drift 46s linear infinite}.hero .c2{animation-duration:70s;animation-delay:-30s}.hero .c1{animation-delay:-12s}
+.hero .bus{animation:drive 16s linear infinite}
+.hero .wheel{transform-box:fill-box;transform-origin:center;animation:spin .7s linear infinite}
+.hero .dashline{animation:dash 1.2s linear infinite}
+.hero .win{animation:twinkle 3.2s ease-in-out infinite}.hero .w2{animation-delay:-1s}.hero .w3{animation-delay:-2s}
+.stats2{list-style:none;padding:0;margin:0 0 14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.stats2 li{border:1px solid var(--line);border-radius:10px;background:var(--panel-2);padding:10px 12px}
+.stats2 b{display:block;font-size:28px;line-height:1.1;color:var(--orange)}.stats2 span{font-size:14px;color:var(--muted)}
+@keyframes drift{from{transform:translateX(-140px)}to{transform:translateX(760px)}}
+@keyframes drive{from{transform:translateX(-90px)}to{transform:translateX(700px)}}
+@keyframes dash{to{stroke-dashoffset:-26}}
+@keyframes twinkle{0%,100%{opacity:.2}50%{opacity:1}}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.14);opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes viewIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes slideIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
+@keyframes dots{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-5px);opacity:1}}
+@keyframes badgePulse{0%{box-shadow:0 0 0 0 rgba(242,140,27,.7)}100%{box-shadow:0 0 0 10px rgba(242,140,27,0)}}
+.view.on{animation:viewIn .3s ease-out}
+.tasks>*,.svclist>*,.nlist>*,.grid>*,.stats2>*{animation:rise .45s cubic-bezier(.2,.7,.2,1) backwards}
+.tasks>:nth-child(2),.svclist>:nth-child(2),.nlist>:nth-child(2),.grid>:nth-child(2),.stats2>:nth-child(2){animation-delay:0.140s}
+.tasks>:nth-child(3),.svclist>:nth-child(3),.nlist>:nth-child(3),.grid>:nth-child(3),.stats2>:nth-child(3){animation-delay:0.185s}
+.tasks>:nth-child(4),.svclist>:nth-child(4),.nlist>:nth-child(4),.grid>:nth-child(4),.stats2>:nth-child(4){animation-delay:0.230s}
+.tasks>:nth-child(5),.svclist>:nth-child(5),.nlist>:nth-child(5),.grid>:nth-child(5),.stats2>:nth-child(5){animation-delay:0.275s}
+.tasks>:nth-child(6),.svclist>:nth-child(6),.nlist>:nth-child(6),.grid>:nth-child(6),.stats2>:nth-child(6){animation-delay:0.320s}
+.tasks>:nth-child(7),.svclist>:nth-child(7),.nlist>:nth-child(7),.grid>:nth-child(7),.stats2>:nth-child(7){animation-delay:0.365s}
+.tasks>:nth-child(8),.svclist>:nth-child(8),.nlist>:nth-child(8),.grid>:nth-child(8),.stats2>:nth-child(8){animation-delay:0.410s}
+.tasks>:nth-child(9),.svclist>:nth-child(9),.nlist>:nth-child(9),.grid>:nth-child(9),.stats2>:nth-child(9){animation-delay:0.455s}
+.tasks>:nth-child(10),.svclist>:nth-child(10),.nlist>:nth-child(10),.grid>:nth-child(10),.stats2>:nth-child(10){animation-delay:0.500s}
+.tasks>:nth-child(11),.svclist>:nth-child(11),.nlist>:nth-child(11),.grid>:nth-child(11),.stats2>:nth-child(11){animation-delay:0.545s}
+.tasks>:nth-child(12),.svclist>:nth-child(12),.nlist>:nth-child(12),.grid>:nth-child(12),.stats2>:nth-child(12){animation-delay:0.590s}
+.drawer.open nav a{animation:slideIn .3s backwards}
+.drawer.open nav a:nth-child(1){animation-delay:0.04s}.drawer.open nav a:nth-child(2){animation-delay:0.08s}.drawer.open nav a:nth-child(3){animation-delay:0.12s}.drawer.open nav a:nth-child(4){animation-delay:0.16s}.drawer.open nav a:nth-child(5){animation-delay:0.20s}.drawer.open nav a:nth-child(6){animation-delay:0.24s}.drawer.open nav a:nth-child(7){animation-delay:0.28s}.drawer.open nav a:nth-child(8){animation-delay:0.32s}.drawer.open nav a:nth-child(9){animation-delay:0.36s}.drawer.open nav a:nth-child(10){animation-delay:0.40s}
+.nbadge{animation:badgePulse 2s ease-out infinite}
+.msg.typing .dots{display:inline-flex;gap:5px;padding:4px 0}
+.dots i{width:8px;height:8px;border-radius:50%;background:var(--muted);animation:dots 1s ease-in-out infinite}
+.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+.btn,.chip,.task,.svcrow,.tile,.ntab,.opt{transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease}
+.btn:active,.chip:active,.task:active,.svcrow:active,.tile:active,.ntab:active,.opt:active{transform:scale(.98)}
+@media (hover:hover){.task:hover,.svcrow:hover,.tile:hover,.opt:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.18)}.btn:hover{transform:translateY(-1px)}}
+.svcrow .go{transition:transform .15s ease}.svcrow:hover .go{transform:translateX(4px)}
+@media (prefers-reduced-motion:reduce){html:not([data-motion="on"]) *,html:not([data-motion="on"]) *::before{animation:none!important;transition:none!important}}
+html[data-motion="off"] *,html[data-motion="off"] *::before{animation:none!important;transition:none!important}
+html[data-motion="off"] .progress{display:none}
+
 /* site info: footer, about, faq, terms */
 .sitefoot{background:#1d1f21;color:#e6e6e6;border-top:3px solid var(--orange);margin-top:8px}
 .sitefoot .cols{max-width:1040px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:26px;padding-block:28px 12px}
@@ -306,6 +358,7 @@ dl.facts dd{white-space:pre-line}
 </style>
 </head>
 <body>
+<div class="progress" id="prog" aria-hidden="true"></div>
 <div class="notice pad" role="note"><strong>Prototype by Team Apex (UNZA)</strong> for the AI for Public Good Challenge. Sample data, not official council advice.</div>
 
 <a class="skip" href="#main">Skip to main content</a>
@@ -344,6 +397,7 @@ dl.facts dd{white-space:pre-line}
   <hr class="sep">
   <div class="prefs" role="group" aria-label="Display settings">
     <span>Display</span><div class="row"><button type="button" data-theme="light" aria-pressed="true">Light</button><button type="button" data-theme="dark" aria-pressed="false">Dark</button></div>
+    <span>Motion</span><div class="row"><button type="button" data-motion="on" aria-pressed="true">On</button><button type="button" data-motion="off" aria-pressed="false">Off</button></div>
     <span>Text size</span><div class="row"><button type="button" data-size="0" aria-pressed="true">A</button><button type="button" data-size="1" aria-pressed="false">A+</button><button type="button" data-size="2" aria-pressed="false">A++</button></div>
   </div>
   <hr class="sep">
@@ -355,8 +409,22 @@ dl.facts dd{white-space:pre-line}
 <main class="pad" id="main" tabindex="-1">
   <!-- HOME / CHAT -->
   <section class="view on" id="v-home">
+    <div class="hero" aria-hidden="true"><svg viewBox="0 0 600 150" preserveAspectRatio="xMidYMid slice" focusable="false">
+      <defs><linearGradient id="hsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0f3d1e"/><stop offset=".62" stop-color="#2e8b57"/><stop offset="1" stop-color="#f0c36a"/></linearGradient></defs>
+      <rect width="600" height="150" fill="url(#hsky)"/>
+      <circle class="sunglow" cx="470" cy="96" r="46" fill="#f28c1b" opacity=".28"/><circle class="sun" cx="470" cy="96" r="26" fill="#f28c1b"/>
+      <g transform="translate(0,24)"><g class="cloud c1"><ellipse rx="34" ry="10" fill="#fff" opacity=".85"/><ellipse cx="-16" cy="-8" rx="18" ry="9" fill="#fff" opacity=".85"/><ellipse cx="14" cy="-9" rx="20" ry="10" fill="#fff" opacity=".85"/></g></g>
+      <g transform="translate(0,56)"><g class="cloud c2"><ellipse rx="26" ry="8" fill="#fff" opacity=".6"/><ellipse cx="-12" cy="-6" rx="14" ry="7" fill="#fff" opacity=".6"/><ellipse cx="11" cy="-7" rx="15" ry="8" fill="#fff" opacity=".6"/></g></g>
+      <g fill="#0b2a17"><rect x="18" y="86" width="34" height="44"/><rect x="56" y="66" width="26" height="64"/><rect x="86" y="94" width="40" height="36"/><rect x="130" y="52" width="30" height="78"/><rect x="164" y="78" width="36" height="52"/><rect x="204" y="98" width="28" height="32"/>
+        <rect x="250" y="90" width="64" height="40"/><path d="M262 90a20 20 0 0 1 40 0z"/><rect x="278" y="62" width="8" height="14"/>
+        <rect x="334" y="72" width="30" height="58"/><rect x="368" y="96" width="38" height="34"/><rect x="520" y="80" width="28" height="50"/><rect x="552" y="62" width="30" height="68"/></g>
+      <g fill="#ffd37a"><rect class="win" x="24" y="94" width="5" height="6"/><rect class="win w2" x="36" y="108" width="5" height="6"/><rect class="win w3" x="62" y="76" width="5" height="6"/><rect class="win" x="68" y="96" width="5" height="6"/><rect class="win w2" x="138" y="62" width="5" height="6"/><rect class="win w3" x="146" y="84" width="5" height="6"/><rect class="win" x="172" y="90" width="5" height="6"/><rect class="win w2" x="342" y="84" width="5" height="6"/><rect class="win w3" x="350" y="104" width="5" height="6"/><rect class="win" x="560" y="74" width="5" height="6"/><rect class="win w2" x="568" y="96" width="5" height="6"/></g>
+      <rect y="128" width="600" height="22" fill="#0b2a17"/><line class="dashline" x1="0" y1="140" x2="600" y2="140" stroke="#f5c542" stroke-width="2" stroke-dasharray="14 12"/>
+      <g transform="translate(0,113)"><g class="bus"><rect width="46" height="18" rx="4" fill="#f28c1b"/><rect x="5" y="3" width="8" height="7" fill="#d2e2f1"/><rect x="16" y="3" width="8" height="7" fill="#d2e2f1"/><rect x="27" y="3" width="8" height="7" fill="#d2e2f1"/><rect x="38" y="3" width="5" height="9" fill="#d2e2f1"/><circle class="wheel" cx="11" cy="19" r="4.5" fill="#111"/><circle class="wheel" cx="35" cy="19" r="4.5" fill="#111"/></g></g>
+    </svg></div>
     <h1 class="page">Find a Lusaka City Council service</h1>
     <p class="lede">Ask in plain English. You get the answer first, then the details, the law and where to go.</p>
+    <ul class="stats2" id="homeStats" aria-label="At a glance"></ul>
     <div class="chat">
       <span class="status"><i></i> Prototype with sample records</span>
       <div class="assist"><b>Assistant</b><span>Questions about rates, levies, permits and where records are kept.</span></div>
@@ -834,7 +902,9 @@ function ask(q) {
   show("home");
   add("user", esc(q));
   const a = answerFor(q, mode);
-  const b = add("bot", renderAnswer(a)); b._a = a; b.dataset.q = q;
+  if (!motionOn()) { const b = add("bot", renderAnswer(a)); b._a = a; b.dataset.q = q; return; }
+  const tb = add("bot typing", '<span class="dots" role="status" aria-label="NOVA AI is writing"><i></i><i></i><i></i></span>');
+  setTimeout(() => { tb.className = "msg bot"; tb.innerHTML = renderAnswer(a); tb._a = a; tb.dataset.q = q; msgs.scrollTop = msgs.scrollHeight; }, 700);
 }
 function openHandover(btn, reason) {
   if (btn.dataset.done) return;
@@ -1171,6 +1241,26 @@ let PREF = { theme: "light", size: "0" };
 try { PREF = Object.assign(PREF, JSON.parse(localStorage.getItem("lccPrefs") || "{}")); } catch (e) {}
 applyPrefs(PREF.theme, PREF.size);
 const savePrefs = () => { try { localStorage.setItem("lccPrefs", JSON.stringify(PREF)); } catch (e) {} };
+/* ---- motion: on by default, follows the phone's "reduce motion" setting, and can be switched off in the menu ---- */
+function motionOn() { return PREF.motion ? PREF.motion === "on" : !(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches); }
+function applyMotion() {
+  const on = motionOn(); document.documentElement.dataset.motion = on ? "on" : "off";
+  document.querySelectorAll(".prefs [data-motion]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.motion === (on ? "on" : "off"))));
+}
+function countUp() {
+  document.querySelectorAll("#homeStats [data-count]").forEach((el) => {
+    const to = +el.dataset.count; if (!motionOn()) { el.textContent = to; return; }
+    const t0 = performance.now(), d = 1100;
+    (function f(t) { const p = Math.min(1, (t - t0) / d); el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(f); })(t0);
+  });
+}
+$("homeStats").innerHTML = [[PD.services.length, "e-Council services"], [PD.categories.length, "departments"], [4, "ways to search"], [DATA.length, "records searched"]].map(([n, l]) => `<li><b data-count="${n}">${n}</b><span>${esc(l)}</span></li>`).join("");
+document.addEventListener("click", (e) => { const t = e.target.closest(".prefs [data-motion]"); if (t) { PREF.motion = t.dataset.motion; savePrefs(); applyMotion(); countUp(); } });
+const _showMotion = show;
+show = function (v, t) { _showMotion(v, t); if (v === "home") countUp(); };
+(function () { const prog = $("prog"); let busy = false; addEventListener("scroll", () => { if (busy) return; busy = true; requestAnimationFrame(() => { const m = document.documentElement.scrollHeight - innerHeight; prog.style.transform = "scaleX(" + (m > 0 ? Math.min(1, scrollY / m) : 0) + ")"; busy = false; }); }, { passive: true }); })();
+applyMotion(); countUp();
+
 function openCat(code) {
   show("departments");
   const el = $("cat-" + code); if (el) setTimeout(() => el.scrollIntoView({ behavior: "smooth", block: "start" }), 60);
