@@ -777,6 +777,7 @@ if (!DATA.length) {
   document.addEventListener("DOMContentLoaded", () => document.body.prepend(w));
 }
 const $ = (id) => document.getElementById(id);
+const safeUrl = (u) => { try { const x = new URL(String(u), location.href); return (x.protocol === "https:" || x.protocol === "http:" || x.protocol === "mailto:" || x.protocol === "tel:") ? x.href : "#"; } catch (e) { return "#"; } };
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const PORTAL = "https://ecouncils.gsb.gov.zm/services";
 
@@ -854,6 +855,10 @@ const MODE_NAMES = { auto: "Auto", keyword: "Keyword", subject: "Subject or topi
 
 /* ---- guardrails ---- */
 const RULES = [
+  { re: /\b(env(ironment)? variables?|api[ _-]?keys?|secret keys?|passwords? (file|list)|credentials?|\.env\b|database (url|password)|connection string|server path|file path)\b/i, say: "I can't share system settings, keys, passwords or server details. I can help you find information about Lusaka City Council services and records.", ho: null },
+  { re: /\b(run|execute|exec)\b.{0,25}\b(command|script|code|shell|sql|query)\b|\bsudo\b|rm -rf|drop table|<script|javascript:|onerror\s*=|union select/i, say: "I can't run commands or code. I can help you find information about Lusaka City Council services and records.", ho: null },
+  { re: /(other|another|previous) (user|person|citizen)s?'? (chat|conversation|message|question)|show .{0,20}(everyone|all users|other users)/i, say: "I can't show other people's conversations or details. I can help you with your own question about a council service.", ho: null },
+  { re: /(make up|invent|fabricate|pretend).{0,30}(policy|rule|fee|law|bylaw|requirement|notice)/i, say: "I can only tell you what the approved council information says. I won't invent policies, fees or rules. I can pass your question to a council officer.", ho: "no_source" },
   { re: /ignore (all |the |your |previous |prior )+(instructions|rules)|system prompt|reveal .*(prompt|instructions)|developer mode|pretend (you|to)|jailbreak/i, say: "I can't do that. I can help you find information about Lusaka City Council services and records, and show where each record is held." },
   { re: /waive|reduce my (fee|levy|rates)|avoid (paying|fees|the levy)|loophole|bypass|skip (the )?(fee|check)|pay less/i, say: "I can't help with reducing or avoiding fees. I can explain what the approved records say about a service, or pass your question to a council officer.", ho: "sensitive" },
   { re: /\b(my|his|her|their|someone'?s|another)\b.{0,30}\b(balance|arrears|owe|account|valuation|statement)\b|how much do i owe|check my (rates|levy)/i, say: "I can't see anyone's personal account, balance or case. The official portal or a council officer handles that. I can pass your question to an officer.", ho: "sensitive" },
@@ -915,8 +920,12 @@ function renderAnswer(a) {
   if (a.ho) h += `<div><button class="btn alt" data-ho="${a.ho}">Pass to a council officer</button></div>`;
   return h;
 }
+const ASKLOG = [];
 function ask(q) {
-  q = q.trim().slice(0, 500); if (!q) return;
+  q = String(q).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, "").trim().slice(0, 500); if (!q) return;
+  const now = Date.now(); while (ASKLOG.length && now - ASKLOG[0] > 60000) ASKLOG.shift();
+  if (ASKLOG.length >= 20) { show("home"); add("bot", "<p>You are sending questions very quickly. Please wait a minute and try again.</p>"); return; }
+  ASKLOG.push(now);
   show("home");
   add("user", esc(q));
   const a = answerFor(q, mode);
@@ -1172,7 +1181,7 @@ const newsSorted = () => NEWS.slice().sort((a, b) => String(b.date).localeCompar
 const fmtDate = (d) => { try { return new Date(d + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }); } catch (e) { return d; } };
 function newsCard(i) {
   const s = i.svc && PD.services.find((x) => x.id === i.svc);
-  const more = s ? `<div><button class="btn alt" type="button" data-svc="${esc(s.id)}">Open: ${esc(s.name)}</button></div>` : i.url ? `<div><a class="btn alt" href="${esc(i.url)}" target="_blank" rel="noopener" style="text-decoration:none">Read more</a></div>` : "";
+  const more = s ? `<div><button class="btn alt" type="button" data-svc="${esc(s.id)}">Open: ${esc(s.name)}</button></div>` : i.url ? `<div><a class="btn alt" href="${esc(safeUrl(i.url))}" target="_blank" rel="noopener" style="text-decoration:none">Read more</a></div>` : "";
   return `<article class="ncard ${esc(i.type)}"><div class="meta2"><span class="tag best">${esc(NEWS_TYPES[i.type] || "News")}</span><time datetime="${esc(i.date)}">${esc(fmtDate(i.date))}</time>${i.sample ? '<span class="sample">Sample item</span>' : ""}</div><h3>${esc(i.title)}</h3><p>${esc(i.summary)}</p>${more}</article>`;
 }
 const alertsSupported = () => "Notification" in window;
@@ -1393,7 +1402,7 @@ $("btnSearch").addEventListener("click", () => { show("search"); setTimeout(() =
     `<li><a href="${esc(S.website.url)}" target="_blank" rel="noopener">Council website (${esc(S.website.label)})</a></li><li><a href="${esc(S.portal.url)}" target="_blank" rel="noopener">${esc(S.portal.label)}</a></li>`;
 
   $("fSocial").innerHTML = [["facebook", "Facebook"], ["youtube", "Youtube"], ["twitter", "Twitter"], ["instagram", "Instagram"]].map(([k, l]) =>
-    `<li><a href="${esc(S.social[k] || SOC_SEARCH[k])}" target="_blank" rel="noopener" aria-label="${l}">${SOC_ICON[k]}${l}</a></li>`).join("") +
+    `<li><a href="${esc(safeUrl(S.social[k] || SOC_SEARCH[k]))}" target="_blank" rel="noopener" aria-label="${l}">${SOC_ICON[k]}${l}</a></li>`).join("") +
     `<li><a href="#" data-go="app">${CHAT_ICON}Get the app</a></li>` +
     (S.whatsapp && S.whatsapp.number ? `<li><a href="${waLink()}" target="_blank" rel="noopener">${CHAT_ICON}WhatsApp chatbot</a></li>` : `<li><a href="#" data-go="app">${CHAT_ICON}WhatsApp chatbot</a></li>`);
 
