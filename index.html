@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f3d1e">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
 <title>LCC NOVA AI</title>
 <meta name="description" content="Prototype records and service assistant for Lusaka City Council, built by Team Apex (University of Zambia).">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -384,6 +387,7 @@ dl.facts dd{white-space:pre-line}
     <a href="#" data-go="home" class="on">Home</a>
     <a href="#" data-go="guide">Find the right service</a>
     <a href="#" data-go="news">News and notices <span class="nbadge" id="newsBadge" hidden></span></a>
+    <a href="#" data-go="app">Get the app and WhatsApp</a>
     <a href="#" data-go="services">Services</a>
     <a href="#" data-go="departments">Departments</a>
     <a href="#" data-go="help">Help and support</a>
@@ -449,6 +453,13 @@ dl.facts dd{white-space:pre-line}
     <h2 style="margin:26px 0 8px;font-size:24px">Latest news and notices</h2>
     <div class="nlist" id="homeNews"></div>
     <p style="margin-top:12px"><button class="btn alt" type="button" data-go="news">All news, trending and notices</button></p>
+  </section>
+
+  <!-- GET THE APP -->
+  <section class="view" id="v-app">
+    <h1 class="page">Get the app</h1>
+    <p class="lede">Install LCC NOVA AI on your phone like an app, chat with it on WhatsApp, or share it with family and friends.</p>
+    <div class="svc" id="appBody"></div>
   </section>
 
   <!-- NEWS -->
@@ -664,7 +675,12 @@ const SITE_INFO = {
   // e-Services portal support call centre (as shown in the e-Council portal footer)
   portalSupport: { phone: "+260 211 428 600", shortCode: "2008", email: "info@eservices.gov.zm" },
   // Paste the official page links here. If left empty, the link opens a search for "Lusaka City Council".
-  social: { facebook: "", youtube: "", twitter: "", instagram: "" }
+  social: { facebook: "", youtube: "", twitter: "", instagram: "" },
+  // WhatsApp chatbot: paste the WhatsApp number of the chatbot, digits only with the country code (for example 260971234567).
+  // Leave it empty until the chatbot is connected. The button then explains that the link is coming.
+  whatsapp: { number: "", greeting: "Hello NOVA AI" },
+  // The public web address people should share and install from.
+  publicUrl: "https://lcc-new-nova.vercel.app"
 };
 const FAQ_GROUPS = [
   { title: "About LCC NOVA AI", items: [
@@ -718,6 +734,8 @@ const SOC_SEARCH = {
   twitter: "https://x.com/search?q=Lusaka%20City%20Council",
   instagram: "https://www.instagram.com/explore/search/keyword/?q=Lusaka%20City%20Council"
 };
+const CHAT_ICON = '<svg viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-5 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>';
+const waLink = () => "https://wa.me/" + String(SITE_INFO.whatsapp.number).replace(/\D/g, "") + "?text=" + encodeURIComponent(SITE_INFO.whatsapp.greeting || "Hello");
 const SOC_ICON = {
   facebook: '<svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-1.6 19.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.3v7A10 10 0 0 0 12 2z"/></svg>',
   youtube: '<svg viewBox="0 0 24 24"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4A2.5 2.5 0 0 0 2.4 7.2C2 8.8 2 12 2 12s0 3.2.4 4.8a2.5 2.5 0 0 0 1.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8c.4-1.6.4-4.8.4-4.8s0-3.2-.4-4.8zM10 15V9l5.2 3L10 15z"/></svg>',
@@ -996,7 +1014,7 @@ function doSearch(q, m) {
 }
 let sDebounce;
 /* ---- navigation ---- */
-const VIEW_TITLES = { home: "Find a council service", guide: "Find the right service", services: "Services", departments: "Departments", help: "Help and support", about: "About", faq: "FAQs", terms: "Terms and conditions", staff: "Staff queue", news: "News and notices", search: "Search records", service: "Service" };
+const VIEW_TITLES = { home: "Find a council service", guide: "Find the right service", services: "Services", departments: "Departments", help: "Help and support", about: "About", faq: "FAQs", terms: "Terms and conditions", staff: "Staff queue", news: "News and notices", app: "Get the app", search: "Search records", service: "Service" };
 function show(v, title) {
   if (v === "staff" && session.role !== "staff") { openAuth("staff"); return; }
   document.querySelectorAll(".view").forEach((x) => x.classList.toggle("on", x.id === "v-" + v));
@@ -1226,10 +1244,38 @@ $("nwSvc").innerHTML = '<option value="">None</option>' + PD.services.map((s) =>
 const nwItem = () => ({ id: "n-" + Date.now().toString(36), type: $("nwType").value, date: new Date().toISOString().slice(0, 10), title: $("nwTitle").value.trim(), summary: $("nwSum").value.trim(), ...($("nwSvc").value ? { svc: $("nwSvc").value } : {}) });
 $("nwPrev").addEventListener("click", () => { const i = nwItem(); if (!i.title || !i.summary) return; i.sample = true; NEWS = NEWS.concat(i); NTAB = "all"; renderNews(); show("news"); });
 $("nwJson").addEventListener("click", () => { const i = nwItem(); if (!i.title || !i.summary) { $("nwOut").hidden = false; $("nwOut").textContent = "Add a title and a short summary first."; return; } $("nwOut").hidden = false; $("nwOut").textContent = JSON.stringify(i, null, 2) + ","; });
-if (NPREF.on) registerSW();
+registerSW();
 if ("serviceWorker" in navigator) navigator.serviceWorker.addEventListener("message", (e) => { if (e.data && e.data.go === "news") show("news"); });
 renderNews(); checkNews(); setInterval(checkNews, 5 * 60 * 1000);
 (function () { const v = new URLSearchParams(location.search).get("view"); if (v && v !== "staff" && document.getElementById("v-" + v)) show(v); })();
+
+/* ---- get the app, WhatsApp chatbot and share links ---- */
+let installEvt = null;
+const isStandalone = () => (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true;
+addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); installEvt = e; renderApp(); });
+addEventListener("appinstalled", () => { installEvt = null; renderApp(); });
+const shareUrl = () => (/^https?:/.test(location.href) && !/localhost|127\.0\.0\.1/.test(location.host) ? location.origin + location.pathname.replace(/index\.html$/, "") : SITE_INFO.publicUrl);
+function renderApp() {
+  const box = $("appBody"); if (!box) return;
+  const url = shareUrl(), txt = "Find Lusaka City Council services, fees, requirements and news on LCC NOVA AI (prototype): ";
+  const wa = SITE_INFO.whatsapp || {}, enc = encodeURIComponent;
+  const install = isStandalone() ? `<p class="big">You are using the app.</p>`
+    : installEvt ? `<p>Add it to your home screen in one tap. It opens like an app, with no app store needed.</p><div><button class="btn" type="button" data-appact="install">Install the app</button></div>`
+    : `<p>Add it to your home screen. It opens like an app, with no app store needed.</p><ul><li><b>Android (Chrome):</b> tap the three dots, then <b>Install app</b> or <b>Add to Home screen</b>.</li><li><b>iPhone (Safari):</b> tap the Share button, then <b>Add to Home Screen</b>.</li><li><b>Computer (Chrome or Edge):</b> click the install icon at the right end of the address bar.</li></ul>`;
+  const chat = wa.number ? `<p>Ask NOVA AI your questions on WhatsApp. It answers from the same approved Council records.</p><div><a class="btn" href="${waLink()}" target="_blank" rel="noopener" style="text-decoration:none">Chat on WhatsApp</a></div>`
+    : `<p>The WhatsApp chatbot link is not switched on yet. When the Council connects the chatbot to a WhatsApp number, the <b>Chat on WhatsApp</b> button appears here and in the page footer.</p><p class="note">Setup: connect the Voiceflow agent to WhatsApp (Voiceflow WhatsApp or Twilio integration), then paste the number into <code>SITE_INFO.whatsapp.number</code>. See the README.</p>`;
+  const links = [["WhatsApp", "https://wa.me/?text=" + enc(txt + url)], ["Facebook", "https://www.facebook.com/sharer/sharer.php?u=" + enc(url)], ["X (Twitter)", "https://twitter.com/intent/tweet?text=" + enc(txt) + "&url=" + enc(url)], ["Telegram", "https://t.me/share/url?url=" + enc(url) + "&text=" + enc(txt)], ["LinkedIn", "https://www.linkedin.com/sharing/share-offsite/?url=" + enc(url)], ["Email", "mailto:?subject=" + enc("LCC NOVA AI") + "&body=" + enc(txt + url)]];
+  const share = `<p>Send the link to family, friends and customers:</p><div class="row2" style="display:flex;gap:8px;flex-wrap:wrap">${links.map(([l, u]) => `<a class="btn alt" href="${esc(u)}" target="_blank" rel="noopener" style="text-decoration:none">${esc(l)}</a>`).join("")}<button class="btn alt" type="button" data-appact="copy">Copy link</button>${navigator.share ? '<button class="btn alt" type="button" data-appact="share">Share...</button>' : ""}</div><p class="note" id="copyMsg" role="status"></p><p class="note">Link: ${esc(url)}</p>`;
+  box.innerHTML = secBox("Install on your phone or computer", install) + secBox("Chat on WhatsApp", chat) + secBox("Share with others", share);
+}
+document.addEventListener("click", async (e) => {
+  const t = e.target.closest("[data-appact]"); if (!t) return;
+  const url = shareUrl();
+  if (t.dataset.appact === "install" && installEvt) { installEvt.prompt(); try { await installEvt.userChoice; } catch (x) {} installEvt = null; renderApp(); }
+  if (t.dataset.appact === "copy") { let ok = false; try { await navigator.clipboard.writeText(url); ok = true; } catch (x) {} const m = $("copyMsg"); if (m) m.textContent = ok ? "Link copied." : "Copy this link: " + url; }
+  if (t.dataset.appact === "share") { try { await navigator.share({ title: "LCC NOVA AI", text: "Find Lusaka City Council services on LCC NOVA AI", url }); } catch (x) {} }
+});
+renderApp();
 
 /* ---- display settings (remembered if the browser allows it) ---- */
 function applyPrefs(theme, size) {
@@ -1347,7 +1393,9 @@ $("btnSearch").addEventListener("click", () => { show("search"); setTimeout(() =
     `<li><a href="${esc(S.website.url)}" target="_blank" rel="noopener">Council website (${esc(S.website.label)})</a></li><li><a href="${esc(S.portal.url)}" target="_blank" rel="noopener">${esc(S.portal.label)}</a></li>`;
 
   $("fSocial").innerHTML = [["facebook", "Facebook"], ["youtube", "Youtube"], ["twitter", "Twitter"], ["instagram", "Instagram"]].map(([k, l]) =>
-    `<li><a href="${esc(S.social[k] || SOC_SEARCH[k])}" target="_blank" rel="noopener" aria-label="${l}">${SOC_ICON[k]}${l}</a></li>`).join("");
+    `<li><a href="${esc(S.social[k] || SOC_SEARCH[k])}" target="_blank" rel="noopener" aria-label="${l}">${SOC_ICON[k]}${l}</a></li>`).join("") +
+    `<li><a href="#" data-go="app">${CHAT_ICON}Get the app</a></li>` +
+    (S.whatsapp && S.whatsapp.number ? `<li><a href="${waLink()}" target="_blank" rel="noopener">${CHAT_ICON}WhatsApp chatbot</a></li>` : `<li><a href="#" data-go="app">${CHAT_ICON}WhatsApp chatbot</a></li>`);
 
   $("fSupport").innerHTML = `<b>Lusaka City Council</b>
     <div class="row">Phone: <a href="${telHref(S.lcc.phone)}">${esc(S.lcc.phone)}</a></div>
