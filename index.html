@@ -230,6 +230,7 @@ footer{border-top:1px solid var(--line);color:var(--muted);font-size:13px;paddin
 /* motion: hero scene, reveals, micro-interactions. Only transform and opacity, so it stays smooth on phones. */
 .progress{position:fixed;left:0;top:0;height:3px;width:100%;background:var(--orange);transform:scaleX(0);transform-origin:left;z-index:70;pointer-events:none}
 .hero{border-radius:16px;overflow:hidden;height:130px;margin:4px 0 14px;border:1px solid var(--line)}
+.nvid{width:100%;max-width:360px;max-height:70vh;border-radius:12px;background:#000;display:block;margin:10px 0}
 .hero.photo{position:relative;height:clamp(250px,42vw,320px);background:#0f3d1e}
 .hero.photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:38% 30%;transform-origin:50% 40%}
 .hero.photo .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,42,23,.15) 0%,rgba(11,42,23,.55) 55%,rgba(11,42,23,.88) 100%)}
@@ -439,7 +440,6 @@ dl.facts dd{white-space:pre-line}
           <button class="send" type="submit" aria-label="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/></svg></button>
         </div>
       </form>
-      <div><button class="btn alt" id="vfOpen" type="button" hidden>Ask the AI agent (Voiceflow)</button></div>
       <p class="disc">NOVA AI answers only from approved LCC records and may not have every record. Prototype, not an official council service.</p>
     </div>
     <h2 style="margin:26px 0 0;font-size:24px">What do you need to do?</h2>
@@ -636,28 +636,142 @@ window.LCC_PORTAL = {"source":"Lusaka City Council e-Councils portal (ecouncils.
 
 </script>
 <script>window.LCC_NEWS = {
-  "updated": "2026-11-01",
-  "note": "SAMPLE ITEMS ONLY. Replace them with real Lusaka City Council news. Every item with \"sample\": true shows a Sample badge on the site. Remove that line when an item is real and approved.",
+  "updated": "2026-11-02",
+  "note": "Items without \"sample\": true are taken from public Lusaka City Council posts and notices. Items with \"sample\": true show a Sample badge. Replace samples with approved news.",
   "items": [
-    { "id": "n-001", "type": "notice", "sample": true, "date": "2026-11-01", "title": "Many permits and levies run to 31 December",
-      "summary": "Health Permit, Petroleum Storage Licence, Telecommunication Mast Levy, Site Rent, Lease of Council Properties and Outdoor Advertisement permits are valid until 31 December of the current year. Renew before then.", "svc": "ECP-018" },
-    { "id": "n-002", "type": "notice", "sample": true, "date": "2026-11-01", "title": "Late renewal penalties apply",
-      "summary": "The portal lists a late renewal penalty of ZMW 1,000 per year due for the Business Levy and the Petroleum Storage Licence, and K100 per six-month period for the Food Handlers Certificate.", "svc": "ECP-001" },
-    { "id": "n-003", "type": "story", "sample": true, "date": "2026-10-31", "title": "Getting married at the Civic Centre: fees and steps",
-      "summary": "A Zambian couple pays from ZMW 650 with 21 days' notice on a Monday, Wednesday or Friday. Fees are higher at weekends, with shorter notice, and for non-Zambians. See the full fee table and what to bring.", "svc": "ECP-029" },
-    { "id": "n-004", "type": "story", "sample": true, "date": "2026-10-31", "title": "Burial permits: what you need and how long it takes",
-      "summary": "The Council issues the burial or other disposal permit in one working day. You need a notice of death, the cause-of-death document, an embalming certificate and an ID for the person who died.", "svc": "ECP-021" },
-    { "id": "n-005", "type": "trending", "sample": true, "date": "2026-11-01", "title": "Trending: Business Levy",
-      "summary": "People often ask how to pay, renew or change a business levy, and what the late fee is.", "svc": "ECP-001" },
-    { "id": "n-006", "type": "trending", "sample": true, "date": "2026-11-01", "title": "Trending: Building Permit",
-      "summary": "People often ask how long a building permit takes (28 or 90 calendar days) and what to bring.", "svc": "ECP-027" },
-    { "id": "n-007", "type": "trending", "sample": true, "date": "2026-11-01", "title": "Trending: Parking Disc Permit",
-      "summary": "People often ask what a parking disc costs (ZMW 300 a month per vehicle) and where it can be used.", "svc": "ECP-016" },
-    { "id": "n-008", "type": "notice", "sample": true, "date": "2026-10-31", "title": "Some service details are still being confirmed",
-      "summary": "Personal Levy, Annual Market Occupancy Permit and Bus Station Storage Fees still show 'To be confirmed with LCC'. Contact the Council at info@lcc.gov.zm for these." }
+    {
+      "id": "n-106",
+      "type": "notice",
+      "date": "2026-10-30",
+      "title": "Warning: do not dump waste in drains",
+      "summary": "The Council says it unblocks drains to prevent cholera and warns that anyone caught dumping waste in the drainage will be prosecuted. Source: Lusaka City Council Facebook page."
+    },
+    {
+      "id": "n-107",
+      "type": "story",
+      "date": "2026-10-31",
+      "title": "Council says blocked drain in Zingalume is a drawback to its efforts",
+      "summary": "Despite the Council's efforts to unblock clogged drainages, it reports that the drain in Zingalume is full of rubbish. Water cannot flow freely and diseases are being bred there. The Council calls this a serious drawback to its efforts. Source: Lusaka City Council Facebook page."
+    },
+    {
+      "id": "n-108",
+      "type": "story",
+      "date": "2026-10-29",
+      "title": "Anti-Corruption Commission donates four waste bins to the Council",
+      "summary": "The Anti-Corruption Commission (ACC) has donated four metal waste bins to Lusaka City Council to support cleanliness and solid waste management. The bins will be placed around the ACC premises and at Kulima Bus Station, two busy public areas, to discourage littering and indiscriminate waste disposal. The Council welcomed the gesture. Source: Lusaka City Council Facebook page."
+    },
+    {
+      "id": "n-105",
+      "type": "story",
+      "date": "2026-10-31",
+      "title": "LCC demolishes over 500 illegal makeshift structures at Blue Tent, Kamwala",
+      "summary": "Lusaka City Council Police, working with the Zambia Police Service, demolished over 500 illegal makeshift structures around Universal Church in Kamwala, known as the Blue Tent trading area. The Council says they were put up without its approval. The exercise is part of Operation Clear Path, which aims to restore order in the city and prevent diseases such as cholera. Council Police and Zambia Police Service will patrol the area 24/7. Source: Lusaka City Council Facebook page.",
+      "video": "media/blue-tent.mp4",
+      "poster": "media/blue-tent.jpg"
+    },
+    {
+      "id": "n-101",
+      "type": "notice",
+      "date": "2026-11-01",
+      "title": "LCC continues removal of illegal billboards",
+      "summary": "The Council's exercise to remove illegal billboards has continued. It reminds the public and business owners that billboards must not be mounted without prior approval from the Council. Source: Lusaka City Council Facebook page.",
+      "svc": "ECP-011"
+    },
+    {
+      "id": "n-102",
+      "type": "story",
+      "date": "2026-10-31",
+      "title": "LCC begins billboard removal along the Great East Road corridor",
+      "summary": "The Council has started removing billboards along the Great East Road corridor, from Hybrid Traffic Circle to Munali Flyover Bridge, to make way for road development works. It follows a public notice telling billboard owners and advertising agencies to remove their billboards. The Council urges everyone affected to cooperate. Source: Lusaka City Council Facebook page."
+    },
+    {
+      "id": "n-103",
+      "type": "story",
+      "date": "2026-10-31",
+      "title": "Routine drain desilting and sweeping continues",
+      "summary": "Lusaka City Council, through its performance-based contractors, has continued with routine desilting of drainages and sweeping. Source: Lusaka City Council Facebook page (post summary only)."
+    },
+    {
+      "id": "n-104",
+      "type": "notice",
+      "date": "2026-10-30",
+      "title": "Public notice: Council offices open on Saturday 31 October 2026",
+      "summary": "Council officers worked on Saturday 31 October 2026 so the public could apply for and process a Business Levy certificate, a Fire Certificate or a Health Permit. The aim is to reduce delays and attend to clients promptly. Enquiries: +260 211 252048 or info@lcc.gov.zm. Issued by the Town Clerk on 30 October 2026.",
+      "svc": "ECP-001"
+    },
+    {
+      "id": "n-001",
+      "type": "notice",
+      "sample": true,
+      "date": "2026-11-01",
+      "title": "Many permits and levies run to 31 December",
+      "summary": "Health Permit, Petroleum Storage Licence, Telecommunication Mast Levy, Site Rent, Lease of Council Properties and Outdoor Advertisement permits are valid until 31 December of the current year. Renew before then.",
+      "svc": "ECP-018"
+    },
+    {
+      "id": "n-002",
+      "type": "notice",
+      "sample": true,
+      "date": "2026-11-01",
+      "title": "Late renewal penalties apply",
+      "summary": "The portal lists a late renewal penalty of ZMW 1,000 per year due for the Business Levy and the Petroleum Storage Licence, and K100 per six-month period for the Food Handlers Certificate.",
+      "svc": "ECP-001"
+    },
+    {
+      "id": "n-003",
+      "type": "story",
+      "sample": true,
+      "date": "2026-10-31",
+      "title": "Getting married at the Civic Centre: fees and steps",
+      "summary": "A Zambian couple pays from ZMW 650 with 21 days' notice on a Monday, Wednesday or Friday. Fees are higher at weekends, with shorter notice, and for non-Zambians. See the full fee table and what to bring.",
+      "svc": "ECP-029"
+    },
+    {
+      "id": "n-004",
+      "type": "story",
+      "sample": true,
+      "date": "2026-10-31",
+      "title": "Burial permits: what you need and how long it takes",
+      "summary": "The Council issues the burial or other disposal permit in one working day. You need a notice of death, the cause-of-death document, an embalming certificate and an ID for the person who died.",
+      "svc": "ECP-021"
+    },
+    {
+      "id": "n-005",
+      "type": "trending",
+      "sample": true,
+      "date": "2026-11-01",
+      "title": "Trending: Business Levy",
+      "summary": "People often ask how to pay, renew or change a business levy, and what the late fee is.",
+      "svc": "ECP-001"
+    },
+    {
+      "id": "n-006",
+      "type": "trending",
+      "sample": true,
+      "date": "2026-11-01",
+      "title": "Trending: Building Permit",
+      "summary": "People often ask how long a building permit takes (28 or 90 calendar days) and what to bring.",
+      "svc": "ECP-027"
+    },
+    {
+      "id": "n-007",
+      "type": "trending",
+      "sample": true,
+      "date": "2026-11-01",
+      "title": "Trending: Parking Disc Permit",
+      "summary": "People often ask what a parking disc costs (ZMW 300 a month per vehicle) and where it can be used.",
+      "svc": "ECP-016"
+    },
+    {
+      "id": "n-008",
+      "type": "notice",
+      "sample": true,
+      "date": "2026-10-31",
+      "title": "Some service details are still being confirmed",
+      "summary": "Personal Levy, Annual Market Occupancy Permit and Bus Station Storage Fees still show 'To be confirmed with LCC'. Contact the Council at info@lcc.gov.zm for these."
+    }
   ]
-}
-;</script>
+};</script>
 <script>
 /* ============ SITE_INFO: edit contact details, links, FAQs and terms here ============ */
 const SITE_INFO = {
@@ -1173,12 +1287,12 @@ let NPREF = { on: false, types: ["story", "trending", "notice"] }, NSEEN = [], N
 try { NPREF = Object.assign(NPREF, JSON.parse(localStorage.getItem("lccNewsPrefs") || "{}")); NSEEN = JSON.parse(localStorage.getItem("lccNewsSeen") || "[]"); NREAD = JSON.parse(localStorage.getItem("lccNewsRead") || "[]"); } catch (e) {}
 const saveN = () => { try { localStorage.setItem("lccNewsPrefs", JSON.stringify(NPREF)); localStorage.setItem("lccNewsSeen", JSON.stringify(NSEEN)); localStorage.setItem("lccNewsRead", JSON.stringify(NREAD)); } catch (e) {} };
 let NTAB = "all";
-const newsSorted = () => NEWS.slice().sort((a, b) => String(b.date).localeCompare(String(a.date)));
+const newsSorted = () => NEWS.slice().sort((a, b) => (a.sample ? 1 : 0) - (b.sample ? 1 : 0) || String(b.date).localeCompare(String(a.date)));
 const fmtDate = (d) => { try { return new Date(d + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }); } catch (e) { return d; } };
 function newsCard(i) {
   const s = i.svc && PD.services.find((x) => x.id === i.svc);
   const more = s ? `<div><button class="btn alt" type="button" data-svc="${esc(s.id)}">Open: ${esc(s.name)}</button></div>` : i.url ? `<div><a class="btn alt" href="${esc(safeUrl(i.url))}" target="_blank" rel="noopener" style="text-decoration:none">Read more</a></div>` : "";
-  return `<article class="ncard ${esc(i.type)}"><div class="meta2"><span class="tag best">${esc(NEWS_TYPES[i.type] || "News")}</span><time datetime="${esc(i.date)}">${esc(fmtDate(i.date))}</time>${i.sample ? '<span class="sample">Sample item</span>' : ""}</div><h3>${esc(i.title)}</h3><p>${esc(i.summary)}</p>${more}</article>`;
+  return `<article class="ncard ${esc(i.type)}"><div class="meta2"><span class="tag best">${esc(NEWS_TYPES[i.type] || "News")}</span><time datetime="${esc(i.date)}">${esc(fmtDate(i.date))}</time>${i.sample ? '<span class="sample">Sample item</span>' : ""}</div><h3>${esc(i.title)}</h3><p>${esc(i.summary)}</p>${i.video ? `<video class="nvid" controls preload="none" playsinline${i.poster ? ` poster="${esc(i.poster)}"` : ""} aria-label="Video: ${esc(i.title)}"><source src="${esc(i.video)}" type="video/mp4">Your browser cannot play this video.</video>` : ""}${more}</article>`;
 }
 const alertsSupported = () => "Notification" in window;
 function renderAlertPanel() {
@@ -1461,15 +1575,12 @@ renderQueue();
 /* Voiceflow AI agent: paste your Project ID between the quotes. Leave empty to run without it. */
 const VOICEFLOW_PROJECT_ID = "6ad90235ccac1895c9b41557";
 (function () {
-  const btn = document.getElementById("vfOpen");
   if (!VOICEFLOW_PROJECT_ID) return;
-  btn.hidden = false;
   const s = document.createElement("script");
   s.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs"; s.type = "text/javascript";
-  s.onerror = () => { btn.textContent = "AI agent could not load (blocked or offline)"; console.error("[vf-debug] Voiceflow script failed to load"); };
+  s.onerror = () => { console.error("[vf-debug] Voiceflow script failed to load"); };
   s.onload = () => { console.log("[vf-debug] script loaded, starting widget with project", VOICEFLOW_PROJECT_ID); window.voiceflow.chat.load({ verify: { projectID: VOICEFLOW_PROJECT_ID }, url: "https://general-runtime.voiceflow.com", voice: { url: "https://runtime-api.voiceflow.com" } }).then?.(() => console.log("[vf-debug] widget ready")).catch?.((e) => { console.error("[vf-debug] load failed", e); btn.textContent = "AI agent failed to start: check Project ID and publish"; }); };
   document.head.appendChild(s);
-  btn.addEventListener("click", () => window.voiceflow && window.voiceflow.chat.open());
 })();
 </script>
 </body>
