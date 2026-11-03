@@ -7,7 +7,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>LCC NOVA AI</title>
-<meta name="description" content="Prototype records and service assistant for Lusaka City Council, built by Team Apex (University of Zambia).">
+<meta name="description" content="Find Lusaka City Council services, fees, requirements, records and news. Ask in plain English.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&display=swap">
@@ -370,7 +370,7 @@ dl.facts dd{white-space:pre-line}
 </head>
 <body>
 <div class="progress" id="prog" aria-hidden="true"></div>
-<div class="notice pad" role="note"><strong>Prototype by Team Apex (UNZA)</strong> for the AI for Public Good Challenge. Sample data, not official council advice.</div>
+<div class="notice pad" role="note">Need help? Call the Council on <strong>+260 211 252 048</strong> or email <strong>info@lcc.gov.zm</strong></div>
 
 <a class="skip" href="#main">Skip to main content</a>
 <header class="site pad">
@@ -426,7 +426,7 @@ dl.facts dd{white-space:pre-line}
     <p class="lede">Ask in plain English. You get the answer first, then the details, the law and where to go.</p>
     <ul class="stats2" id="homeStats" aria-label="At a glance"></ul>
     <div class="chat">
-      <span class="status"><i></i> Prototype with sample records</span>
+      <span class="status"><i></i> Records and services assistant</span>
       <div class="assist"><b>Assistant</b><span>Questions about rates, levies, permits and where records are kept.</span></div>
       <div class="chips" id="chips"></div>
       <div class="msgs" id="msgs" aria-live="polite"></div>
@@ -440,7 +440,7 @@ dl.facts dd{white-space:pre-line}
           <button class="send" type="submit" aria-label="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/></svg></button>
         </div>
       </form>
-      <p class="disc">NOVA AI answers only from approved LCC records and may not have every record. Prototype, not an official council service.</p>
+      <p class="disc">NOVA AI answers only from approved LCC records and may not have every record. Check important details with the Council.</p>
     </div>
     <h2 style="margin:26px 0 0;font-size:24px">What do you need to do?</h2>
     <div class="tasks" id="homeTasks"></div>
@@ -553,7 +553,7 @@ dl.facts dd{white-space:pre-line}
   <!-- STAFF QUEUE (demo) -->
   <section class="view" id="v-staff">
     <h1 class="page">Staff queue</h1>
-    <p class="lede">Cases passed on by the assistant, with the draft answer and sources attached. Prototype: held in this browser only.</p>
+    <p class="lede">Cases passed on by the assistant, with the draft answer and sources attached. Held in this browser only in the pilot.</p>
     <div class="panel">
       <b>Staff assist</b>
       <textarea class="f" id="staffq" aria-label="Caller question" rows="2" style="width:100%" placeholder="Paste a caller's question to get a sourced answer"></textarea>
@@ -580,7 +580,7 @@ dl.facts dd{white-space:pre-line}
     <div><h3>Social Networks</h3><ul id="fSocial"></ul></div>
     <div class="sup"><h3>Support</h3><div id="fSupport"></div></div>
   </div>
-  <p class="small pad">LCC NOVA AI &middot; Prototype by Team Apex, University of Zambia &middot; Sample data only, not an official council service.</p>
+  <p class="small pad">LCC NOVA AI &middot; Pilot version, pending Lusaka City Council approval &middot; Some details are still being confirmed with the Council.</p>
 </footer>
 
 <div class="modal" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
@@ -794,7 +794,7 @@ const SITE_INFO = {
 const FAQ_GROUPS = [
   { title: "About LCC NOVA AI", items: [
     ["What is LCC NOVA AI?", ["An assistant that helps you find information about Lusaka City Council services and the records behind them, and shows whether each record is digital, physical or both."]],
-    ["Is this an official council service?", ["No. It is a prototype by Team Apex, University of Zambia, for the AI for Public Good Challenge. It uses sample data and is not official council advice."]],
+    ["Is this an official council service?", ["Not yet. LCC NOVA AI is a pilot being prepared with Lusaka City Council. It is waiting for Council approval and some details are still being confirmed, so check important details with the Council or on the e-Council portal."]],
     ["Can it show my account, balance or case?", ["No. It cannot see personal accounts, balances or cases, and it cannot take payments. It can pass your question to a council officer."]],
     ["What do Digital, Physical and Both mean?", ["Digital: a digital copy exists. Physical: only a paper copy exists, kept at the location shown. Both: a digital copy and a paper copy exist."]],
     ["How do I search?", ["Type a keyword, a subject such as Property rates, an Act reference, or a full question. The Search page also lets you pick the mode."]]
@@ -1047,7 +1047,7 @@ function openHandover(btn, reason) {
   if (btn.dataset.done) return;
   const bubble = btn.closest(".msg"), box = document.createElement("div");
   box.className = "ho";
-  box.innerHTML = `<strong>Pass this to a council officer</strong><p class="note" style="margin:0">Privacy: leave contact details only if you want a reply. In this prototype nothing is sent anywhere and nothing is kept after you close the page.</p>
+  box.innerHTML = `<strong>Pass this to a council officer</strong><p class="note" style="margin:0">Privacy: leave contact details only if you want a reply. In this pilot nothing is sent anywhere and nothing is kept after you close the page.</p>
     <label class="inline"><input type="checkbox" class="consent"> I agree to leave contact details for a reply</label>
     <input type="text" class="contact" placeholder="Phone or email (optional)" disabled aria-label="Contact detail"><div><button class="btn" type="button">Send to staff queue</button></div>`;
   const cb = box.querySelector(".consent"), ct = box.querySelector(".contact");
@@ -1056,7 +1056,7 @@ function openHandover(btn, reason) {
     const a = bubble._a;
     queue.push({ topic: (a.sources[0] && a.sources[0].title) || "general enquiry", question_summary: bubble.dataset.q.replace(/\b\d{6,}\b/g, "[number removed]"), draft_answer: a.kind === "answer" ? plain(a) : null, sources_checked: a.sources.map((s) => s.code), reason, contact_consent: cb.checked, contact_detail: cb.checked && ct.value.trim() ? ct.value.trim() + " (prototype: not encrypted)" : null, status: "new" });
     renderQueue();
-    box.innerHTML = `<p style="margin:0"><strong>Passed to the staff queue.</strong> An officer will see your question, the draft answer and the sources checked. No response time is promised in this prototype.</p>`;
+    box.innerHTML = `<p style="margin:0"><strong>Passed to the staff queue.</strong> An officer will see your question, the draft answer and the sources checked. No response time is promised during the pilot.</p>`;
   };
   btn.dataset.done = "1"; btn.disabled = true; btn.parentElement.after(box);
 }
@@ -1376,7 +1376,7 @@ addEventListener("appinstalled", () => { installEvt = null; renderApp(); });
 const shareUrl = () => (/^https?:/.test(location.href) && !/localhost|127\.0\.0\.1/.test(location.host) ? location.origin + location.pathname.replace(/index\.html$/, "") : SITE_INFO.publicUrl);
 function renderApp() {
   const box = $("appBody"); if (!box) return;
-  const url = shareUrl(), txt = "Find Lusaka City Council services, fees, requirements and news on LCC NOVA AI (prototype): ";
+  const url = shareUrl(), txt = "Find Lusaka City Council services, fees, requirements and news on LCC NOVA AI: ";
   const wa = SITE_INFO.whatsapp || {}, enc = encodeURIComponent;
   const install = isStandalone() ? `<p class="big">You are using the app.</p>`
     : installEvt ? `<p>Add it to your home screen in one tap. It opens like an app, with no app store needed.</p><div><button class="btn" type="button" data-appact="install">Install the app</button></div>`
@@ -1493,7 +1493,7 @@ $("btnSearch").addEventListener("click", () => { show("search"); setTimeout(() =
   $("aboutBody").innerHTML = `
     <div class="infoCard"><h2>About LCC NOVA AI</h2>
       <p>LCC NOVA AI is a web chat that helps residents and council staff find information about Lusaka City Council services and the records behind them. It shows whether each record is digital, physical or both, and where the paper copy is kept.</p>
-      <p>It was built by Team Apex, University of Zambia, for the AI for Public Good Challenge. It uses sample data and is not an official council service.</p></div>
+      <p>It was developed by Team Apex, University of Zambia, with Lusaka City Council. It is a pilot waiting for Council approval, and some details are still being confirmed.</p></div>
     <div class="infoCard"><h2>About the e-Council services portal</h2>
       <p>The e-Council portal is an online catalogue of public services. Residents, businesses and visitors can browse services, find what they need and apply online instead of going to an office. It works on phones and computers and includes online payment for services requested through it.</p>
       <p>Each service has a service passport that shows who can apply, requirements, fees, processing time and validity. Signing in uses a ZamPass account.</p>
